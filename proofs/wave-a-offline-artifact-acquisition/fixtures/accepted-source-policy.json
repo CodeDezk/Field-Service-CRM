@@ -1,0 +1,52 @@
+{
+  "schema": "wave-a-network-source-policy-v1",
+  "classification": "ACCEPTED_POLICY_NOT_EXECUTION_AUTHORITY",
+  "entries": [
+    {
+      "id": "WP112-SOURCE-001",
+      "scheme": "https",
+      "host": "storage.googleapis.com",
+      "port": 443,
+      "path": "/flutter_infra_release/releases/releases_macos.json",
+      "stages": ["METADATA_RETRIEVAL"],
+      "redirectLimit": 0
+    },
+    {
+      "id": "WP112-SOURCE-002",
+      "scheme": "https",
+      "host": "storage.googleapis.com",
+      "port": 443,
+      "pathPrefix": "/flutter_infra_release/releases/",
+      "stages": ["ARTIFACT_RETRIEVAL"],
+      "redirectLimit": 0
+    },
+    {
+      "id": "WP112-SOURCE-003",
+      "scheme": "https",
+      "host": "pub.dev",
+      "port": 443,
+      "pathPrefix": "/api/packages/",
+      "stages": ["METADATA_RETRIEVAL"],
+      "redirectLimit": 0
+    },
+    {
+      "id": "WP112-SOURCE-004",
+      "scheme": "https",
+      "host": "pub.dev",
+      "port": 443,
+      "pathPrefix": "/api/archives/",
+      "stages": ["ARTIFACT_RETRIEVAL"],
+      "redirectLimit": 1,
+      "redirectDestinationId": "WP112-SOURCE-005"
+    },
+    {
+      "id": "WP112-SOURCE-005",
+      "scheme": "https",
+      "host": "storage.googleapis.com",
+      "port": 443,
+      "pathPrefix": "/pub.dartlang.org/packages/",
+      "stages": ["ARTIFACT_RETRIEVAL_REDIRECT_DESTINATION"],
+      "redirectLimit": 0
+    }
+  ]
+}

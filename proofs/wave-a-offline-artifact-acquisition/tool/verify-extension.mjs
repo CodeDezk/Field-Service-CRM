@@ -5,10 +5,19 @@ import { sha256File, sourceTextIsStaticOnly, validateMetadataCommit, validateSou
 
 export const EXPECTED_FILES = [
   ".gitignore", "AUTHORITY.md", "README.md",
-  "fixtures/synthetic-metadata-commit.json", "fixtures/synthetic-source-catalog.json",
+  "fixtures/accepted-source-policy.json", "fixtures/synthetic-metadata-commit.json",
+  "fixtures/synthetic-network-request.json", "fixtures/synthetic-run-bound-metadata-commit.json",
+  "fixtures/synthetic-owner-signing-key.json",
+  "fixtures/synthetic-source-catalog.json",
   "schemas/acquisition-receipt.schema.json", "schemas/artifact-inventory.schema.json",
-  "schemas/metadata-commit.schema.json", "schemas/source-policy.schema.json", "schemas/static-authorization.schema.json",
-  "test/acquisition-extension-static.test.mjs", "tool/contract.mjs", "tool/static-launcher.mjs", "tool/verify-extension.mjs",
+  "schemas/metadata-commit.schema.json", "schemas/network-authorization.schema.json",
+  "schemas/network-request.schema.json", "schemas/source-policy.schema.json", "schemas/static-authorization.schema.json",
+  "schemas/run-bound-metadata-commit.schema.json",
+  "test/acquisition-extension-static.test.mjs", "test/acquisition-launcher-static.test.mjs",
+  "test/trusted-network-launcher-static.test.mjs",
+  "tool/acquisition-launcher.mjs", "tool/contract.mjs", "tool/network-contract.mjs",
+  "tool/static-launcher.mjs", "tool/trusted-bootstrap-loader.py", "tool/trusted-network-launcher.py",
+  "tool/verify-extension.mjs", "tool/verify-network-launcher.mjs",
 ].sort();
 
 function walk(root, directory = root) {
@@ -27,7 +36,13 @@ export function verifyExtension(root) {
   if (resolve(root) !== expectedRoot) throw new Error("ROOT_BOUNDARY");
   const found = walk(expectedRoot);
   if (JSON.stringify(found) !== JSON.stringify(EXPECTED_FILES)) throw new Error("PUBLIC_INVENTORY");
-  for (const path of found) {
+  for (const path of found.filter((path) => !path.startsWith("fixtures/accepted-source-policy") &&
+    !path.startsWith("fixtures/synthetic-network-request") && !path.startsWith("schemas/network-") &&
+    !path.startsWith("fixtures/synthetic-run-bound-metadata-commit") &&
+    !path.startsWith("schemas/run-bound-metadata-commit") &&
+    !path.startsWith("test/acquisition-launcher-") && !path.startsWith("tool/acquisition-launcher") &&
+    !path.startsWith("test/trusted-network-launcher-") && !path.startsWith("tool/trusted-") &&
+    !path.startsWith("tool/network-contract") && !path.startsWith("tool/verify-network-launcher"))) {
     const text = readFileSync(resolve(expectedRoot, path), "utf8");
     if (!sourceTextIsStaticOnly(text)) throw new Error(`NETWORK_CAPABILITY:${path}`);
     if (path.endsWith(".json")) JSON.parse(text);
@@ -41,7 +56,7 @@ export function verifyExtension(root) {
   if (!metadata.entries.every((entry) => entry.purpose === "SOURCE_REVIEW_ONLY")) throw new Error("NON_SYNTHETIC_PURPOSE");
   return {
     result: "PASS",
-    classification: "STATIC_EXTENSION_ONLY",
+    classification: "STATIC_EXTENSION_WITH_NETWORK_LAUNCHER_SOURCE",
     publicFiles: found.length,
     files: found.map((path) => ({ path, sha256: sha256File(resolve(expectedRoot, path)) })),
   };

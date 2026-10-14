@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:field-service-crm:wave-a:acquisition-launcher-authorization:v1",
+  "title": "Wave A acquisition launcher authorization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "runId",
+    "state",
+    "singleUse",
+    "consumed",
+    "publishedRevision",
+    "repositoryTree",
+    "ownerAuthorizationSha256",
+    "publicControlInventorySha256",
+    "signatureAlgorithm",
+    "ownerSigningKeyId",
+    "trustedBootstrapSha256",
+    "trustedBootstrapPath",
+    "trustedLauncherPath",
+    "trustedLauncherSha256",
+    "operator",
+    "validFrom",
+    "expiresAt",
+    "publicRoot",
+    "privateRoot",
+    "nodeBinding",
+    "curlBinding",
+    "sourcePolicy",
+    "limits",
+    "allowedStages",
+    "allowedCommands",
+    "allowedRequestSha256s",
+    "actionFlags"
+  ],
+  "properties": {
+    "schema": { "const": "wave-a-acquisition-launcher-authorization-v1" },
+    "runId": { "type": "string", "minLength": 1 },
+    "state": { "enum": ["EFFECTIVE_STATIC_ONLY", "EFFECTIVE_NETWORK", "CONSUMED"] },
+    "singleUse": { "const": true },
+    "consumed": { "type": "boolean" },
+    "publishedRevision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "repositoryTree": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "ownerAuthorizationSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "publicControlInventorySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "signatureAlgorithm": { "const": "Ed25519" },
+    "ownerSigningKeyId": { "const": "wp118-synthetic-rfc8032-test-vector-1" },
+    "trustedBootstrapSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "trustedBootstrapPath": { "type": "string", "pattern": "^/" },
+    "trustedLauncherPath": { "type": "string", "pattern": "^/" },
+    "trustedLauncherSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "effectiveAuthorizationSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "primaryInventorySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "consumedAt": { "type": "string", "format": "date-time" },
+    "operator": { "const": "/root" },
+    "validFrom": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "publicRoot": { "const": "proofs/wave-a-offline-artifact-acquisition/" },
+    "privateRoot": { "type": "string", "pattern": "^internal-local/work-packages/WP-[0-9]+/" },
+    "nodeBinding": { "$ref": "#/$defs/toolBinding" },
+    "curlBinding": { "$ref": "#/$defs/toolBinding" },
+    "sourcePolicy": { "type": "object" },
+    "limits": { "type": "object" },
+    "allowedStages": { "type": "array", "minItems": 1, "uniqueItems": true },
+    "allowedCommands": { "type": "array", "minItems": 1 },
+    "allowedRequestSha256s": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+    },
+    "actionFlags": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "state": { "const": "CONSUMED" } } },
+      "then": { "required": ["effectiveAuthorizationSha256", "primaryInventorySha256", "consumedAt"] }
+    }
+  ],
+  "$defs": {
+    "toolBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourcePath", "sealedRelativePath", "version", "sha256"],
+      "properties": {
+        "sourcePath": { "type": "string", "pattern": "^/" },
+        "sealedRelativePath": { "type": "string", "pattern": "^sealed-executables/[a-z0-9._-]+$" },
+        "version": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:field-service-crm:wave-a:network-request:v1",
+  "title": "Wave A acquisition network request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "classification",
+    "requestId",
+    "stage",
+    "sourceId",
+    "url",
+    "outputRelativePath",
+    "maximumBytes",
+    "expectedSha256",
+    "expectedSize",
+    "metadataCommitSha256",
+    "metadataCommitRelativePath"
+  ],
+  "properties": {
+    "schema": { "const": "wave-a-network-request-v1" },
+    "classification": { "enum": ["SYNTHETIC_STATIC_NO_EXECUTION", "RUN_BOUND_NETWORK_REQUEST"] },
+    "requestId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$" },
+    "stage": { "enum": ["METADATA_RETRIEVAL", "ARTIFACT_RETRIEVAL"] },
+    "sourceId": { "type": "string", "pattern": "^WP112-SOURCE-00[1-5]$" },
+    "url": { "type": "string", "pattern": "^https://" },
+    "outputRelativePath": { "type": "string", "minLength": 1 },
+    "maximumBytes": { "type": "integer", "minimum": 1, "maximum": 2147483648 },
+    "expectedSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "expectedSize": { "type": ["integer", "null"], "minimum": 1 },
+    "metadataCommitSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "metadataCommitRelativePath": { "anyOf": [{ "const": "evidence/metadata-commit.json" }, { "type": "null" }] },
+    "redirectedFromSourceId": { "anyOf": [{ "const": "WP112-SOURCE-004" }, { "type": "null" }] }
+  }
+}

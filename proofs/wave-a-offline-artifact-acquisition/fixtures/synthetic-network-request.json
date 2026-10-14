@@ -1,0 +1,14 @@
+{
+  "schema": "wave-a-network-request-v1",
+  "classification": "SYNTHETIC_STATIC_NO_EXECUTION",
+  "requestId": "synthetic-flutter-metadata",
+  "stage": "METADATA_RETRIEVAL",
+  "sourceId": "WP112-SOURCE-001",
+  "url": "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json",
+  "outputRelativePath": "quarantine/metadata/flutter-releases-macos.json",
+  "maximumBytes": 8388608,
+  "expectedSha256": null,
+  "expectedSize": null,
+  "metadataCommitSha256": null,
+  "metadataCommitRelativePath": null
+}

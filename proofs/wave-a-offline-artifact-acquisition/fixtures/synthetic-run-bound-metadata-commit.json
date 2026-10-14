@@ -1,0 +1,21 @@
+{
+  "schema": "wave-a-run-bound-metadata-commit-v1",
+  "runId": "synthetic-network-run",
+  "stage": "METADATA_COMMITTED",
+  "sourcePolicySha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "entries": [
+    {
+      "artifactId": "drift-2.35.2",
+      "requestId": "drift-2.35.2",
+      "version": "2.35.2",
+      "sourceId": "WP112-SOURCE-005",
+      "redirectedFromSourceId": "WP112-SOURCE-004",
+      "url": "https://storage.googleapis.com/pub.dartlang.org/packages/drift-2.35.2.tar.gz",
+      "outputRelativePath": "quarantine/artifacts/drift-2.35.2.tar.gz",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 100,
+      "purpose": "EXECUTABLE_PROOF_ARTIFACT"
+    }
+  ],
+  "committedAt": "2026-10-14T00:00:00.000Z"
+}
