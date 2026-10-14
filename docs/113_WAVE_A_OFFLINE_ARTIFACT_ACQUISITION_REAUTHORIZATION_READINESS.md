@@ -154,3 +154,14 @@ prepare owner-decision documentation and one private ineffective authorization d
 No real signing key, network operation, download, artifact, dependency, build, device action,
 runtime proof, application implementation, architecture selection, infrastructure, deployment,
 provider/cost change or customer/live-data use is authorized.
+
+## Verified publication and WP-120 activation
+
+The exact accepted four-path WP-119 inventory was published at revision
+`b7e53835ce32da16d9f2ac6ebe037445690a4cc8`, repository tree
+`e2db50e5635c7aa09a64b9ff979e601e6cd03564`. Live GitHub `main`, local `HEAD` and cached
+`origin/main` matched. WP-119 is closed and its publication authority is consumed.
+
+WP-120 is active for owner-decision documentation and one private ineffective authorization draft
+only. Real signing-key creation, identity instantiation, network and all downstream actions remain
+closed.

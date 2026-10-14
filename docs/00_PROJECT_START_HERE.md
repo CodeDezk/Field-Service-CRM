@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-119 accepted; exact publication authorized |
-| Current phase | Wave A Offline Artifact Acquisition Reauthorization Readiness |
-| Current work package | `WP-119 Wave A Offline Artifact Acquisition Reauthorization Readiness` |
+| Status | Product Discovery closed — WP-120 accepted; exact publication authorized |
+| Current phase | Wave A Acquisition Execution Identity and Signing Authority Readiness |
+| Current work package | `WP-120 Wave A Acquisition Execution Identity, Signing Authority and Private Authorization Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -162,6 +162,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 103. `111_WAVE_A_ACQUISITION_EXTENSION_STATIC_MATERIALIZATION_RESULT.md`
 104. `112_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_AUTHORIZATION_READINESS.md`
 105. `113_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_REAUTHORIZATION_READINESS.md`
+106. `114_WAVE_A_ACQUISITION_EXECUTION_IDENTITY_SIGNING_AUTHORITY_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 
@@ -3142,6 +3143,23 @@ package. Real signing-key creation, network, downloads, artifact acquisition, SD
 dependencies, builds, devices, runtime proof, application coding, final architecture selection,
 infrastructure, deployment, provider/cost changes and customer/live data remain closed. No WP-119
 commit or push is authorized without later owner acceptance.
+
+## WP-119 verified publication and WP-120 activation — 2026-10-14
+
+The owner accepted `DEC-246`, every WP-119 fact and binding, all ten WP-119 decisions and the
+recorded option dispositions. The exact accepted four-path public inventory was committed as
+`b7e5383 WP-119: accept acquisition reauthorization readiness` and published at
+`b7e53835ce32da16d9f2ac6ebe037445690a4cc8`, repository tree
+`e2db50e5635c7aa09a64b9ff979e601e6cd03564`. Live GitHub `main`, local `HEAD` and cached
+`origin/main` matched. WP-119 is closed and its publication authority is consumed.
+
+WP-120 is active for owner-decision documentation and one private ineffective authorization draft
+only. It may inspect the exact published static control, propose execution identities and signing
+custody, identify blockers and recommend a successor. It may not generate a real key, instantiate
+a validator, perform preflight, contact a network, retrieve metadata, download/acquire artifacts,
+restore dependencies, build, use devices, execute runtime proof, code the application, select
+architecture, create infrastructure, deploy, incur provider cost or use customer/live data. No
+WP-120 commit or push is authorized without later owner acceptance.
 
 ## Private execution control
 
