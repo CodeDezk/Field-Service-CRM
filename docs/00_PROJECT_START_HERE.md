@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-112 accepted; exact publication authorized |
-| Current phase | Wave A Offline Artifact Acquisition Authorization Readiness |
-| Current work package | `WP-112 Wave A Offline Artifact Acquisition Authorization Readiness` |
+| Status | Product Discovery closed — WP-119 accepted; exact publication authorized |
+| Current phase | Wave A Offline Artifact Acquisition Reauthorization Readiness |
+| Current work package | `WP-119 Wave A Offline Artifact Acquisition Reauthorization Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -161,6 +161,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 102. `110_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_EXACT_CONTRACT_AUTHORIZATION_READINESS.md`
 103. `111_WAVE_A_ACQUISITION_EXTENSION_STATIC_MATERIALIZATION_RESULT.md`
 104. `112_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_AUTHORIZATION_READINESS.md`
+105. `113_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_REAUTHORIZATION_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 
@@ -3121,6 +3122,26 @@ WP-113 evidence to materialize and independently validate an exact network launc
 contacting a network. Every metadata, download, acquisition, SDK/cache, dependency, build, device,
 runtime, proof, product, architecture, infrastructure, deployment, provider/cost, and
 customer/live-data gate remains closed.
+
+## WP-118 verified publication and WP-119 activation — 2026-10-14
+
+The owner accepted WP-118 result `STATIC_CONTROL_REMEDIATED_VALIDATED`, every recorded finding
+resolution, the 55/55 static-test PASS, both verifier PASS results, the accepted public and private
+inventory hashes, and the independent revalidation PASS. The exact accepted 18-path public/proof
+inventory was committed as `b438dfc WP-118: validate owner-signed acquisition controls` and
+published at `b438dfc5101f49cd40925241b936539f9cf9a47f`, repository tree
+`9755269bf664526d0f863be6e343ed5692f2a0ce`, with proof subtree
+`17a7fd91a1966236d8214f6a1a7f7fd87e1a18ac`. Local `HEAD` and cached `origin/main` match.
+WP-118 is closed; its static and publication authorities are consumed.
+
+The owner activated `WP-119 Wave A Offline Artifact Acquisition Reauthorization Readiness` for
+owner-decision documentation only. WP-119 may bind the published static evidence, distinguish the
+synthetic Ed25519 fixture from later real signing authority, record remaining run-specific
+identity/key/path/request/authorization requirements, and recommend the next separately gated
+package. Real signing-key creation, network, downloads, artifact acquisition, SDK/cache mutation,
+dependencies, builds, devices, runtime proof, application coding, final architecture selection,
+infrastructure, deployment, provider/cost changes and customer/live data remain closed. No WP-119
+commit or push is authorized without later owner acceptance.
 
 ## Private execution control
 

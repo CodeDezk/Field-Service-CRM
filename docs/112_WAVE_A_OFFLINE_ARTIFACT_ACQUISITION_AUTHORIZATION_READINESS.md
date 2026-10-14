@@ -255,3 +255,15 @@ and root static-validation PASS, and authorized publication of only the exact fo
 inventory. After verified publication, WP-113 may perform only the separately bounded static
 launcher materialization and exactly one fresh zero-authority independent validation after
 sealing. Network and every downstream action remain closed.
+
+## Verified downstream publication and WP-119 activation
+
+The accepted static-remediation chain through WP-118 was published at revision
+`b438dfc5101f49cd40925241b936539f9cf9a47f`, repository tree
+`9755269bf664526d0f863be6e343ed5692f2a0ce`, with the complete 28-file acquisition-control proof
+subtree at `17a7fd91a1966236d8214f6a1a7f7fd87e1a18ac`. WP-118 is closed and its static/publication
+authority is consumed.
+
+WP-119 is active for owner-decision documentation only. It may assess reauthorization readiness
+against the exact published controls but may not create a real signing key, private authorization,
+execution identity or network/acquisition state. All downstream gates remain closed.
