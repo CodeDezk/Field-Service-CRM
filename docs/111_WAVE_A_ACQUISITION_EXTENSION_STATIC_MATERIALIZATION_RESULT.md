@@ -130,3 +130,17 @@ WP-111 closes after verified publication. Network and acquisition remain closed.
 must separately define and obtain owner acceptance for fresh execution identities, exact real
 source allowlists, resource limits, run-bound authorization, evidence, stop/cleanup controls and
 the bounded metadata-first sequence before a network operation may occur.
+
+## Verified publication and WP-112 activation
+
+The accepted WP-111 inventory was published at revision
+`42a8657a56e2d9b674e2d030fd940ab5177bae8d`, repository tree
+`4b1cb22e366dd602f14842018f20ce4fed6a7378`. Local `HEAD`, cached `origin/main`, and live remote
+main matched. WP-111 is closed and its publication authority is consumed.
+
+The owner activated WP-112 for owner-decision documentation and private ineffective authorization
+preparation only. WP-112 may assess whether the accepted static controls can enforce a later exact
+network sequence and propose the remaining source, stage, resource, identity, evidence and cleanup
+bindings. It grants no network, metadata, download, acquisition, SDK/cache mutation, dependency,
+build, device, runtime, proof, application, architecture, infrastructure, deployment,
+provider/cost, customer/live-data, commit or push authority.

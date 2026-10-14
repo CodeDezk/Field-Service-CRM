@@ -7,7 +7,7 @@
 | Status | Accepted WP-01 baseline — living decision register |
 | Work package | `WP-01 Product Vision and Boundaries` |
 | Owner | Aung Myo Oo |
-| Last updated | 2026-10-10 |
+| Last updated | 2026-10-14 |
 
 ## Purpose
 
@@ -292,6 +292,7 @@ Accepted.
 | `DEC-242` | Replace the failed WP-106 evidence setup prospectively with a pre-action, expiring, machine-readable authorization; restrictive paths; sealed clean/allowlist receipt; append-only hash-chained operation ledger; fail-closed evidence writer; and fresh independent validation, while preserving the exact accepted candidate versions and separating artifact acquisition from proof materialization. | Missing historical evidence cannot be repaired and absent exact artifacts cannot be substituted. A separately authorized acquisition gate may later create a sealed offline bundle from approved authoritative sources or an equivalently attested owner-supplied bundle; network, dependency restoration, proof creation/execution, architecture selection, and application coding remain separate gates. | Accepted |
 | `DEC-243` | Adopt an exact two-stage metadata-then-artifact acquisition contract, preserve the published WP-109 control as immutable static evidence, require a separately materialized and independently validated acquisition extension before network authority, and retain an owner-supplied evidence-equivalent offline bundle only as a fallback. | WP-109 proves the static control core but deliberately has no network capability and its authority is consumed. Exact upstream metadata, artifact hashes/sizes, transitive/native closure, run-bound tools, identities and network authority remain absent; documentation and an ineffective draft cannot authorize acquisition. | Accepted |
 | `DEC-244` | Accept the WP-111 acquisition extension as independently validated static control evidence and publish only its formal result/governing updates and exact 14-file public proof-control tree. Keep network, metadata retrieval, download, acquisition, dependency, build, device, runtime, proof, application, architecture, infrastructure, deployment, provider/cost and customer/live-data gates closed. | WP-111 produced a dependency-free static extension bound to published WP-110, passed 15/15 tests and the static verifier, consumed its static authority, sealed a 23-entry private inventory, and received one fresh zero-authority independent PASS. Synthetic fixtures and static success do not establish real upstream identity, artifact integrity, dependency closure or execution authority. | Accepted |
+| `DEC-245` | Classify WP-112 as `NOT_READY_NETWORK_LAUNCHER_ABSENT`; accept the proposed source-policy, stage, resource, path, role, authorization, evidence, stop and cleanup envelope; advance one bounded static launcher-materialization package before any network authority; retain only an evidence-equivalent owner-supplied bundle as fallback; and reject direct curl or mutation/reuse of consumed controls. | The published WP-109 and WP-111 launchers are deliberately bound to consumed static-only authorities, paths and stages. Their schemas and validators can support a later acquisition, but no accepted launcher currently checks and invokes exact network commands. Documentation or direct curl would bypass the accepted pre-process authority and ledger controls. | Accepted |
 
 ## Open decision register
 

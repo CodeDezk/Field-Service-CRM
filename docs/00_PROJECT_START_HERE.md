@@ -4,13 +4,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-111 accepted; exact publication authorized |
-| Current phase | Wave A Acquisition Extension Static Materialization and Independent Validation |
-| Current work package | `WP-111 Wave A Acquisition Extension Static Materialization and Independent Validation` |
+| Status | Product Discovery closed — WP-112 accepted; exact publication authorized |
+| Current phase | Wave A Offline Artifact Acquisition Authorization Readiness |
+| Current work package | `WP-112 Wave A Offline Artifact Acquisition Authorization Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
-| Last updated | 2026-10-10 |
+| Last updated | 2026-10-14 |
 
 ## Purpose
 
@@ -160,6 +160,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 101. `109_WAVE_A_MATERIALIZATION_CONTROL_REMEDIATION_OFFLINE_ARTIFACT_ACQUISITION_READINESS.md`
 102. `110_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_EXACT_CONTRACT_AUTHORIZATION_READINESS.md`
 103. `111_WAVE_A_ACQUISITION_EXTENSION_STATIC_MATERIALIZATION_RESULT.md`
+104. `112_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_AUTHORIZATION_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 
@@ -3092,6 +3093,34 @@ limitation, and authorized publication of the formal result/governing updates pl
 14-file public proof-control inventory. WP-111 static success is not real-source, artifact,
 dependency-closure, device or architecture evidence. Every network and execution gate remains
 closed pending a separate later work package.
+
+## WP-111 verified publication and WP-112 activation — 2026-10-14
+
+The exact WP-111 public inventory was committed as
+`42a8657 WP-111: publish static acquisition extension` and published at
+`42a8657a56e2d9b674e2d030fd940ab5177bae8d`, repository tree
+`4b1cb22e366dd602f14842018f20ce4fed6a7378`. Local `HEAD`, cached `origin/main`, and live remote
+main matched. WP-111 is closed and its publication authority is consumed.
+
+The owner activated `WP-112 Wave A Offline Artifact Acquisition Authorization Readiness` for
+owner-decision documentation and private ineffective authorization preparation only. WP-112 may
+inspect the accepted static controls, propose exact later source/stage/resource/path/role/evidence/
+stop/cleanup boundaries, identify execution-readiness blockers and prepare one all-false private
+draft. It may not contact a network, retrieve metadata, download or acquire an artifact, mutate an
+SDK/cache, restore a dependency, build, use a device/runtime, execute a proof, code the
+application, select architecture, create infrastructure, deploy, incur provider cost, or use
+customer/live data. No WP-112 commit or push is authorized without later owner acceptance.
+
+The owner accepted `DEC-245`, every WP-112 fact/source/stage/limit/path/role/authorization/
+evidence/stop/cleanup disposition, and `WP112-DEC-001` through `010`; advanced
+`WP112-OPT-001`; retained `WP112-OPT-004` only as an evidence-equivalent fallback; rejected
+options 002 and 003; accepted the ineffective private draft and root static-validation PASS; and
+authorized commit and push only for documents 00, 02, 111, and 112. After verified publication,
+WP-113 may change only the disposable Wave A acquisition-control proof roots and ignored private
+WP-113 evidence to materialize and independently validate an exact network launcher without
+contacting a network. Every metadata, download, acquisition, SDK/cache, dependency, build, device,
+runtime, proof, product, architecture, infrastructure, deployment, provider/cost, and
+customer/live-data gate remains closed.
 
 ## Private execution control
 
