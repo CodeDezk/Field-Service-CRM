@@ -166,3 +166,16 @@ only the exact four-path public inventory and activation of WP-121 after verifie
 
 WP-121 remains proof-only static remediation. Real signing-key creation, validator instantiation,
 network, acquisition and every downstream gate remain closed.
+
+## Verified publication and WP-121 activation
+
+The accepted four-path WP-120 inventory was committed as
+`1f4c6f0 WP-120: accept signing authority readiness` and published at exact revision
+`1f4c6f0dbdf5141493a4086887518aca2ab47621`. WP-120 is closed and its publication authority is
+consumed.
+
+WP-121 is active only for accepted proof-control static remediation. Its primary result is
+`PRIMARY_STATIC_REMEDIATION_PASS_PENDING_INDEPENDENT_VALIDATION`: 59/59 dependency-free tests and
+both public verifiers pass, while every network entry remains closed before process creation. No
+real key or validator was created. Owner review and separate validator authorization are required;
+WP-121 commit and push remain closed.

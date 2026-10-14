@@ -1,7 +1,9 @@
-"""WP-118 owner-signed exact inline bootstrap.
+"""WP-121 run-bound owner-trust-root exact inline bootstrap.
 
 These exact public-control bytes are passed to `/usr/bin/python3 -I -S -c`. The pinned public key
-is a published static-proof key derived from RFC 8032 test vector 1; it is not a production key.
+is supplied through an exact owner-accepted descriptor path and SHA-256 in the invocation. Static
+tests use the published RFC 8032 fixture; an effective network authorization must use a separately
+materialized `RUN_BOUND_OWNER_PUBLIC_KEY` descriptor and may never use the synthetic fixture.
 """
 
 import hashlib
@@ -11,8 +13,7 @@ import stat
 import sys
 
 
-OWNER_SIGNING_KEY_ID = "wp118-synthetic-rfc8032-test-vector-1"
-OWNER_SIGNING_PUBLIC_KEY_HEX = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+SYNTHETIC_SIGNING_KEY_ID = "wp118-synthetic-rfc8032-test-vector-1"
 _Q = 2 ** 255 - 19
 _L = 2 ** 252 + 27742317777372353535851937790883648493
 _D = (-121665 * pow(121666, _Q - 2, _Q)) % _Q
@@ -23,7 +24,7 @@ def stop(code):
     raise SystemExit(code)
 
 
-def read_once_no_follow(path, required_mode=None):
+def read_once_no_follow(path, required_mode=None, with_info=False):
     flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
     descriptor = os.open(path, flags)
     try:
@@ -48,6 +49,8 @@ def read_once_no_follow(path, required_mode=None):
                           after.st_mtime_ns, after.st_ctime_ns)
         if identity_before != identity_after or len(data) != after.st_size:
             stop("BOOTSTRAP_FILE_CHANGED")
+        if with_info:
+            return {"bytes": data, "mode": stat.S_IMODE(after.st_mode), "identity": identity_after}
         return data
     finally:
         os.close(descriptor)
@@ -127,16 +130,21 @@ def verify_ed25519(public_key, message, signature):
 
 def main():
     expected = ["--authorization", "--authorization-sha256", "--authorization-signature",
-                "--bootstrap-source", "--launcher-source"]
-    if len(sys.argv) < 11 or [sys.argv[1], sys.argv[3], sys.argv[5], sys.argv[7], sys.argv[9]] != expected:
+                "--owner-trust-root", "--owner-trust-root-sha256", "--bootstrap-source",
+                "--launcher-source"]
+    if (len(sys.argv) < 15 or
+            [sys.argv[1], sys.argv[3], sys.argv[5], sys.argv[7], sys.argv[9], sys.argv[11],
+             sys.argv[13]] != expected):
         stop("BOOTSTRAP_ARGUMENTS")
     authorization_path = os.path.realpath(sys.argv[2])
     expected_authorization_hash = sys.argv[4]
     signature_hex = sys.argv[6]
-    bootstrap_path = os.path.realpath(sys.argv[8])
-    launcher_path = os.path.realpath(sys.argv[10])
-    if len(expected_authorization_hash) != 64 or any(
-            character not in "0123456789abcdef" for character in expected_authorization_hash):
+    trust_root_path = os.path.realpath(sys.argv[8])
+    expected_trust_root_hash = sys.argv[10]
+    bootstrap_path = os.path.realpath(sys.argv[12])
+    launcher_path = os.path.realpath(sys.argv[14])
+    if any(len(value) != 64 or any(character not in "0123456789abcdef" for character in value)
+           for value in (expected_authorization_hash, expected_trust_root_hash)):
         stop("BOOTSTRAP_HASH_FORMAT")
     if len(signature_hex) != 128 or any(character not in "0123456789abcdef" for character in signature_hex):
         stop("BOOTSTRAP_SIGNATURE_FORMAT")
@@ -144,16 +152,48 @@ def main():
     authorization_hash = hashlib.sha256(authorization_source).hexdigest()
     if authorization_hash != expected_authorization_hash:
         stop("BOOTSTRAP_AUTHORIZATION_HASH")
-    verify_ed25519(bytes.fromhex(OWNER_SIGNING_PUBLIC_KEY_HEX), authorization_source,
+    trust_root_capture = read_once_no_follow(trust_root_path, with_info=True)
+    trust_root_source = trust_root_capture["bytes"]
+    trust_root_hash = hashlib.sha256(trust_root_source).hexdigest()
+    if trust_root_hash != expected_trust_root_hash:
+        stop("BOOTSTRAP_TRUST_ROOT_HASH")
+    try:
+        trust_root = json.loads(trust_root_source.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        stop("BOOTSTRAP_TRUST_ROOT_JSON")
+    if (set(trust_root) != {"schema", "classification", "algorithm", "keyId", "publicKeyHex"} or
+            trust_root.get("schema") != "wave-a-owner-trust-root-v1" or
+            trust_root.get("classification") not in {
+                "SYNTHETIC_STATIC_TEST_ONLY", "RUN_BOUND_OWNER_PUBLIC_KEY"} or
+            trust_root.get("algorithm") != "Ed25519" or
+            not isinstance(trust_root.get("keyId"), str) or
+            not 8 <= len(trust_root["keyId"]) <= 128 or
+            any(character not in "abcdefghijklmnopqrstuvwxyz0123456789._-"
+                for character in trust_root["keyId"]) or
+            not isinstance(trust_root.get("publicKeyHex"), str) or
+            len(trust_root["publicKeyHex"]) != 64 or
+            any(character not in "0123456789abcdef" for character in trust_root["publicKeyHex"])):
+        stop("BOOTSTRAP_TRUST_ROOT_CONTRACT")
+    required_trust_root_mode = 0o644 if trust_root["classification"] == "SYNTHETIC_STATIC_TEST_ONLY" else 0o600
+    if trust_root_capture["mode"] != required_trust_root_mode:
+        stop("BOOTSTRAP_TRUST_ROOT_MODE")
+    verify_ed25519(bytes.fromhex(trust_root["publicKeyHex"]), authorization_source,
                    bytes.fromhex(signature_hex))
     try:
         authorization = json.loads(authorization_source.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         stop("BOOTSTRAP_AUTHORIZATION_JSON")
-    if authorization.get("state") != "EFFECTIVE_STATIC_ONLY" or authorization.get("consumed") is not False:
+    if (authorization.get("state") not in {"EFFECTIVE_STATIC_ONLY", "EFFECTIVE_NETWORK"} or
+            authorization.get("consumed") is not False):
         stop("BOOTSTRAP_AUTHORIZATION_STATE")
-    if authorization.get("ownerSigningKeyId") != OWNER_SIGNING_KEY_ID:
+    if authorization.get("ownerSigningKeyId") != trust_root["keyId"]:
         stop("BOOTSTRAP_OWNER_KEY_ID")
+    if authorization.get("ownerTrustRootSha256") != trust_root_hash:
+        stop("BOOTSTRAP_TRUST_ROOT_BINDING")
+    if (authorization.get("state") == "EFFECTIVE_NETWORK" and
+            (trust_root["classification"] != "RUN_BOUND_OWNER_PUBLIC_KEY" or
+             trust_root["keyId"] == SYNTHETIC_SIGNING_KEY_ID)):
+        stop("BOOTSTRAP_SYNTHETIC_NETWORK_KEY")
     if authorization.get("signatureAlgorithm") != "Ed25519":
         stop("BOOTSTRAP_SIGNATURE_ALGORITHM")
     if authorization.get("trustedBootstrapPath") != bootstrap_path:
@@ -171,19 +211,20 @@ def main():
     actual_hash = hashlib.sha256(source).hexdigest()
     if actual_hash != expected_hash:
         stop("BOOTSTRAP_LAUNCHER_HASH")
-    separator = sys.argv.index("--", 11) if "--" in sys.argv[11:] else len(sys.argv)
+    separator = sys.argv.index("--", 15) if "--" in sys.argv[15:] else len(sys.argv)
     launcher_arguments = sys.argv[separator + 1:] if separator < len(sys.argv) else []
     sys.argv = [launcher_path] + launcher_arguments
     namespace = {
         "__name__": "__main__",
         "__file__": launcher_path,
         "__package__": None,
-        "__wp118_bootstrap_capture_sha256__": actual_hash,
-        "__wp118_bootstrap_source_sha256__": bootstrap_hash,
-        "__wp118_owner_signature_verified__": True,
-        "__wp118_owner_signing_key_id__": OWNER_SIGNING_KEY_ID,
-        "__wp118_authorization__": authorization,
-        "__wp118_authorization_capture_sha256__": authorization_hash,
+        "__wp121_bootstrap_capture_sha256__": actual_hash,
+        "__wp121_bootstrap_source_sha256__": bootstrap_hash,
+        "__wp121_owner_signature_verified__": True,
+        "__wp121_owner_signing_key_id__": trust_root["keyId"],
+        "__wp121_owner_trust_root_sha256__": trust_root_hash,
+        "__wp121_authorization__": authorization,
+        "__wp121_authorization_capture_sha256__": authorization_hash,
     }
     exec(compile(source, launcher_path, "exec", dont_inherit=True, optimize=2), namespace, namespace)
 

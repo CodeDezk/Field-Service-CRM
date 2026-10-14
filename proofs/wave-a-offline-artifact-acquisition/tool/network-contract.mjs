@@ -55,7 +55,9 @@ export const WP118_CONTRACT = Object.freeze({
 });
 
 const HASH = /^[a-f0-9]{64}$/;
+const GIT_OBJECT = /^[a-f0-9]{40}$/;
 export const WP118_OWNER_SIGNING_KEY_ID = "wp118-synthetic-rfc8032-test-vector-1";
+export const SYNTHETIC_OWNER_SIGNING_KEY_ID = WP118_OWNER_SIGNING_KEY_ID;
 const STATIC_STAGES = ["STATIC_TESTS", "STATIC_VERIFY"];
 const NETWORK_STAGES = ["METADATA_RETRIEVAL", "ARTIFACT_RETRIEVAL"];
 const REQUIRED_STATIC_FLAGS = ["staticMaterialization", "staticTests", "staticVerify", "sealEvidence"];
@@ -185,13 +187,12 @@ export function validateAuthorization(auth, now = new Date(), options = {}) {
   if (auth?.schema !== "wave-a-acquisition-launcher-authorization-v1" || auth.singleUse !== true) {
     throw new Error("AUTH_SCHEMA");
   }
-  if (auth.publishedRevision !== WP118_CONTRACT.publishedRevision || auth.repositoryTree !== WP118_CONTRACT.repositoryTree) {
-    throw new Error("AUTH_REVISION");
-  }
   if (!HASH.test(auth.ownerAuthorizationSha256 ?? "") || !HASH.test(auth.publicControlInventorySha256 ?? "")) {
     throw new Error("AUTH_HASH_BINDING");
   }
-  if (auth.signatureAlgorithm !== "Ed25519" || auth.ownerSigningKeyId !== WP118_OWNER_SIGNING_KEY_ID ||
+  if (auth.signatureAlgorithm !== "Ed25519" ||
+    !/^[a-z0-9][a-z0-9._-]{7,127}$/.test(auth.ownerSigningKeyId ?? "") ||
+    !HASH.test(auth.ownerTrustRootSha256 ?? "") ||
     !HASH.test(auth.trustedBootstrapSha256 ?? "") || !HASH.test(auth.trustedLauncherSha256 ?? "") ||
     !auth.trustedBootstrapPath?.startsWith("/") ||
     !auth.trustedLauncherPath?.startsWith("/")) throw new Error("AUTH_OWNER_SIGNATURE_BINDING");
@@ -201,6 +202,9 @@ export function validateAuthorization(auth, now = new Date(), options = {}) {
   validateSourcePolicy(auth.sourcePolicy);
   validateLimits(auth.limits);
   if (auth.state === "EFFECTIVE_STATIC_ONLY") {
+    if (auth.publishedRevision !== WP118_CONTRACT.publishedRevision ||
+      auth.repositoryTree !== WP118_CONTRACT.repositoryTree ||
+      auth.ownerSigningKeyId !== WP118_OWNER_SIGNING_KEY_ID) throw new Error("AUTH_STATIC_REVISION_KEY");
     if (!(new Date(auth.validFrom) <= now && now < new Date(auth.expiresAt))) throw new Error("AUTH_TIME");
     if (auth.runId !== WP118_CONTRACT.runId || auth.privateRoot !== WP118_CONTRACT.privateRoot || auth.consumed !== false) {
       throw new Error("AUTH_STATIC_BOUNDARY");
@@ -212,6 +216,14 @@ export function validateAuthorization(auth, now = new Date(), options = {}) {
   } else if (auth.state === "EFFECTIVE_NETWORK") {
     if (!(new Date(auth.validFrom) <= now && now < new Date(auth.expiresAt))) throw new Error("AUTH_TIME");
     if (options.allowNetwork !== true) throw new Error("AUTH_NETWORK_NOT_PERMITTED");
+    if (!GIT_OBJECT.test(auth.publishedRevision ?? "") || !GIT_OBJECT.test(auth.repositoryTree ?? "") ||
+      auth.ownerSigningKeyId === SYNTHETIC_OWNER_SIGNING_KEY_ID) throw new Error("AUTH_NETWORK_TRUST_ROOT");
+    if (options.expectedRevision && auth.publishedRevision !== options.expectedRevision) throw new Error("AUTH_REVISION");
+    if (options.expectedTree && auth.repositoryTree !== options.expectedTree) throw new Error("AUTH_TREE");
+    if (options.expectedOwnerSigningKeyId &&
+      auth.ownerSigningKeyId !== options.expectedOwnerSigningKeyId) throw new Error("AUTH_OWNER_KEY");
+    if (options.expectedTrustRootSha256 &&
+      auth.ownerTrustRootSha256 !== options.expectedTrustRootSha256) throw new Error("AUTH_TRUST_ROOT");
     if (auth.consumed !== false || auth.privateRoot === WP118_CONTRACT.privateRoot) throw new Error("AUTH_NETWORK_BOUNDARY");
     if (!NETWORK_STAGES.every((stage) => auth.allowedStages.includes(stage))) throw new Error("AUTH_NETWORK_STAGES");
     if (!Array.isArray(auth.allowedRequestSha256s) || auth.allowedRequestSha256s.length < 1 ||

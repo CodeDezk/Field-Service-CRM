@@ -1,4 +1,4 @@
-"""WP-118 owner-signed descriptor-safe acquisition launcher primitives.
+"""WP-121 owner-signed descriptor-safe acquisition launcher primitives.
 
 The executable network path is closed in WP-118. A later effective authorization must invoke
 these exact bytes through the accepted owner-key bootstrap. `--self-test` exercises only local,
@@ -401,17 +401,23 @@ def enforce_budgets(ledger_state, request, limits, now_epoch):
 
 
 def require_trusted_bootstrap():
-    captured = globals().get("__wp118_bootstrap_capture_sha256__")
-    bootstrap_source_hash = globals().get("__wp118_bootstrap_source_sha256__")
-    signature_verified = globals().get("__wp118_owner_signature_verified__")
-    signing_key_id = globals().get("__wp118_owner_signing_key_id__")
-    authorization = globals().get("__wp118_authorization__")
-    authorization_hash = globals().get("__wp118_authorization_capture_sha256__")
+    captured = globals().get("__wp121_bootstrap_capture_sha256__")
+    bootstrap_source_hash = globals().get("__wp121_bootstrap_source_sha256__")
+    signature_verified = globals().get("__wp121_owner_signature_verified__")
+    signing_key_id = globals().get("__wp121_owner_signing_key_id__")
+    trust_root_hash = globals().get("__wp121_owner_trust_root_sha256__")
+    authorization = globals().get("__wp121_authorization__")
+    authorization_hash = globals().get("__wp121_authorization_capture_sha256__")
     if (not isinstance(captured, str) or len(captured) != 64 or
             signature_verified is not True or
-            signing_key_id != "wp118-synthetic-rfc8032-test-vector-1" or
+            not isinstance(signing_key_id, str) or not 8 <= len(signing_key_id) <= 128 or
+            not isinstance(trust_root_hash, str) or len(trust_root_hash) != 64 or
             not isinstance(authorization, dict)):
         raise ControlStop("TRUSTED_BOOTSTRAP_REQUIRED")
+    if authorization.get("ownerSigningKeyId") != signing_key_id:
+        raise ControlStop("TRUSTED_BOOTSTRAP_KEY_BINDING")
+    if authorization.get("ownerTrustRootSha256") != trust_root_hash:
+        raise ControlStop("TRUSTED_BOOTSTRAP_TRUST_ROOT_BINDING")
     if authorization.get("trustedBootstrapSha256") != bootstrap_source_hash:
         raise ControlStop("TRUSTED_BOOTSTRAP_SOURCE_BINDING")
     if authorization.get("trustedLauncherSha256") != captured:
@@ -419,7 +425,7 @@ def require_trusted_bootstrap():
     if not isinstance(authorization_hash, str) or len(authorization_hash) != 64:
         raise ControlStop("TRUSTED_BOOTSTRAP_AUTHORIZATION_BINDING")
     return {"launcherSha256": captured, "authorizationSha256": authorization_hash,
-            "ownerSigningKeyId": signing_key_id}
+            "ownerSigningKeyId": signing_key_id, "ownerTrustRootSha256": trust_root_hash}
 
 
 def _seed_entry(authority_hash, run_id):
@@ -540,7 +546,7 @@ def main():
         print(canonical_json(self_test()))
         return
     require_trusted_bootstrap()
-    raise ControlStop("NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP118")
+    raise ControlStop("NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121")
 
 
 if __name__ == "__main__":

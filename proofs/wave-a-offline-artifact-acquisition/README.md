@@ -62,6 +62,18 @@ ledger path rebinding with a stable global lock on the verified system Python in
 private seed is an RFC 8032 test vector used only by
 dependency-free static tests; it is not a real credential or production authority.
 
+WP-121 replaces the hard-coded synthetic-key execution interface with a hash-bound owner trust-root
+descriptor interface. The bootstrap captures that descriptor once, binds its hash and key ID to
+the signed authorization, admits a prospective `EFFECTIVE_NETWORK` state only for a non-synthetic
+`RUN_BOUND_OWNER_PUBLIC_KEY`, and rejects descriptor hash/key/public-key drift before launcher use.
+The network-contract validator can check exact expected run-bound revision, tree, key ID and
+trust-root hashes while preserving the accepted source, tool, resource and closed-action controls.
+
+This remains static remediation. The synthetic fixture proves the interface without creating a
+real key, and the trusted launcher still stops every network entry before curl or any network child
+can start. A later separately authorized package must materialize the real public/private key
+pair, renew all bindings, obtain independent validation and receive explicit execution authority.
+
 The public tree contains no acquired artifact, SDK, dependency, lockfile, package manifest,
 credential or effective network authorization. Any later network or artifact operation requires
 new owner authorization, a fresh run identity, exact sources and resource limits, effective

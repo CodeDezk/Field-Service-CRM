@@ -151,3 +151,27 @@ No network, download, artifact acquisition, dependency, build, device, runtime p
 code, architecture selection, infrastructure, deployment, provider/cost, customer/live data,
 commit or push is authorized.
 
+## WP-121 run-bound trust-root interface remediation boundary
+
+WP-121 follows accepted `DEC-247` and is limited to proof-only static remediation of the public-key,
+network-state, revision/tree, schema and run-binding interfaces. It may use only synthetic key
+fixtures, dependency-free local static tests and ignored private static evidence. Real signing-key
+creation, validator instantiation, preflight and every network or acquisition action remain closed.
+
+The exact inline bootstrap must capture a mode-restricted owner trust-root descriptor once with
+no-follow semantics and verify its owner-accepted SHA-256 before signature verification. The
+authorization must bind the same descriptor hash and key ID. A descriptor classified
+`SYNTHETIC_STATIC_TEST_ONLY` may support static tests only and must stop an `EFFECTIVE_NETWORK`
+authorization. A prospective network descriptor must be classified `RUN_BOUND_OWNER_PUBLIC_KEY`,
+use a non-synthetic key ID and be mode `0600`.
+
+The network contract may validate a prospective non-synthetic revision, tree, key ID and trust-root
+hash only when the caller supplies matching expected bindings and explicitly enables validation of
+the network state. This is a static interface, not execution authority: the trusted launcher still
+terminates every network entry with `NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121` and no curl child
+may start. The consumed WP-118 inventory must fail closed after the public tree changes.
+
+WP-121 authorizes no real key, network, metadata, download, acquired artifact, dependency, build,
+device, runtime proof, application code, architecture selection, infrastructure, deployment,
+provider/cost, customer/live data, commit or push.
+

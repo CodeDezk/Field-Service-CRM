@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:field-service-crm:wave-a:owner-trust-root:v1",
+  "title": "Wave A run-bound owner trust root",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "classification", "algorithm", "keyId", "publicKeyHex"],
+  "properties": {
+    "schema": { "const": "wave-a-owner-trust-root-v1" },
+    "classification": {
+      "enum": ["SYNTHETIC_STATIC_TEST_ONLY", "RUN_BOUND_OWNER_PUBLIC_KEY"]
+    },
+    "algorithm": { "const": "Ed25519" },
+    "keyId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{7,127}$" },
+    "publicKeyHex": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

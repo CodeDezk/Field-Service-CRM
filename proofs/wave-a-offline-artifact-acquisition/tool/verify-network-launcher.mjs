@@ -16,6 +16,7 @@ export const EXPECTED_WP115_FILES = [
   "README.md",
   "fixtures/accepted-source-policy.json",
   "fixtures/synthetic-owner-signing-key.json",
+  "fixtures/synthetic-owner-trust-root.json",
   "fixtures/synthetic-metadata-commit.json",
   "fixtures/synthetic-network-request.json",
   "fixtures/synthetic-run-bound-metadata-commit.json",
@@ -25,6 +26,7 @@ export const EXPECTED_WP115_FILES = [
   "schemas/metadata-commit.schema.json",
   "schemas/network-authorization.schema.json",
   "schemas/network-request.schema.json",
+  "schemas/owner-trust-root.schema.json",
   "schemas/run-bound-metadata-commit.schema.json",
   "schemas/source-policy.schema.json",
   "schemas/static-authorization.schema.json",
@@ -90,7 +92,8 @@ export function verifyNetworkLauncher(root) {
   for (const required of ["--disable", "--noproxy", '"--max-redirs", "0"']) {
     if (!contract.includes(required)) throw new Error(`CONTRACT_CONTROL:${required}`);
   }
-  for (const required of ["read_once_no_follow", "verify_ed25519", "OWNER_SIGNING_PUBLIC_KEY_HEX",
+  for (const required of ["read_once_no_follow", "verify_ed25519", "owner-trust-root",
+    "RUN_BOUND_OWNER_PUBLIC_KEY", "BOOTSTRAP_SYNTHETIC_NETWORK_KEY",
     "BOOTSTRAP_SIGNATURE_INVALID", "BOOTSTRAP_SIGNATURE_NONCANONICAL", "BOOTSTRAP_SOURCE_HASH",
     "hashlib.sha256(source)", "exec(compile(source,"]) {
     if (!bootstrap.includes(required)) throw new Error(`TRUSTED_BOOTSTRAP_CONTROL:${required}`);
@@ -98,7 +101,7 @@ export function verifyNetworkLauncher(root) {
   for (const required of ["LedgerSession", "OutputSession", "fcntl.flock(self.descriptor",
     "LEDGER_RESERVED_FIELD", "LEDGER_PATH_IDENTITY", "OUTPUT_PATH_IDENTITY",
     "verify_system_sealed_descriptor", "flock(self.anchor_descriptor",
-    '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP118"]) {
+    '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121"]) {
     if (!trustedLauncher.includes(required)) throw new Error(`TRUSTED_LAUNCHER_CONTROL:${required}`);
   }
   if (contract.includes('args.push("--location")') || !contract.includes('"--max-redirs", "0"')) {
@@ -107,7 +110,7 @@ export function verifyNetworkLauncher(root) {
 
   return {
     result: "PASS",
-    classification: "STATIC_OWNER_SIGNED_DESCRIPTOR_REMEDIATION_READY",
+    classification: "STATIC_RUN_BOUND_TRUST_ROOT_INTERFACE_REMEDIATED",
     publicFiles: found.length,
     runId: WP118_CONTRACT.runId,
     networkPerformed: false,

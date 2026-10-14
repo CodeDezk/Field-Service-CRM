@@ -27,6 +27,7 @@ import { verifyNetworkLauncher } from "../tool/verify-network-launcher.mjs";
 const root = resolve("proofs/wave-a-offline-artifact-acquisition");
 const recordedAuth = JSON.parse(readFileSync("internal-local/work-packages/WP-118/effective-authorization.json", "utf8"));
 const auth = structuredClone(recordedAuth);
+auth.ownerTrustRootSha256 = sha256File(resolve(root, "fixtures/synthetic-owner-trust-root.json"));
 if (auth.state === "CONSUMED") {
   auth.state = "EFFECTIVE_STATIC_ONLY";
   auth.consumed = false;
@@ -189,6 +190,38 @@ test("network state is rejected without explicit validator option", () => {
   for (const flag of ["network", "dns", "metadataRetrieval", "download", "artifactAcquisition"]) changed.actionFlags[flag] = true;
   assert.throws(() => validateAuthorization(changed, new Date("2026-10-14T09:00:00.000Z")), /AUTH_NETWORK_NOT_PERMITTED/);
 });
+test("network state requires a non-synthetic run-bound trust root and exact expected bindings", () => {
+  const changed = structuredClone(auth);
+  changed.state = "EFFECTIVE_NETWORK";
+  changed.publishedRevision = "1".repeat(40);
+  changed.repositoryTree = "2".repeat(40);
+  changed.ownerSigningKeyId = "wp121-run-bound-owner-key-01";
+  changed.privateRoot = "internal-local/work-packages/WP-999/";
+  changed.allowedStages = ["METADATA_RETRIEVAL", "ARTIFACT_RETRIEVAL"];
+  changed.allowedRequestSha256s = ["c".repeat(64)];
+  for (const flag of ["network", "dns", "metadataRetrieval", "download", "artifactAcquisition"]) {
+    changed.actionFlags[flag] = true;
+  }
+  assert.equal(validateAuthorization(changed, new Date("2026-10-14T09:00:00.000Z"), {
+    allowNetwork: true,
+    expectedRevision: changed.publishedRevision,
+    expectedTree: changed.repositoryTree,
+    expectedOwnerSigningKeyId: changed.ownerSigningKeyId,
+    expectedTrustRootSha256: changed.ownerTrustRootSha256,
+  }), true);
+  assert.throws(() => validateAuthorization(changed, new Date("2026-10-14T09:00:00.000Z"), {
+    allowNetwork: true, expectedRevision: "3".repeat(40),
+  }), /AUTH_REVISION/);
+  changed.privateRoot = WP118_CONTRACT.privateRoot;
+  assert.throws(() => validateAuthorization(changed, new Date("2026-10-14T09:00:00.000Z"), {
+    allowNetwork: true,
+  }), /AUTH_NETWORK_BOUNDARY/);
+  changed.privateRoot = "internal-local/work-packages/WP-999/";
+  changed.ownerSigningKeyId = "wp118-synthetic-rfc8032-test-vector-1";
+  assert.throws(() => validateAuthorization(changed, new Date("2026-10-14T09:00:00.000Z"), {
+    allowNetwork: true,
+  }), /AUTH_NETWORK_TRUST_ROOT/);
+});
 test("only exact static commands are allowed", () => {
   const entry = auth.allowedCommands[0];
   assert.equal(commandAllowed(auth, entry.stage, entry.executable, entry.arguments), true);
@@ -230,8 +263,8 @@ test("exact Node and curl bindings require sealed executable locations", () => {
   assert.throws(() => validateToolBinding(auth.curlBinding, WP118_CONTRACT.curl, auth.privateRoot,
     [], "CURL", false), /ENOENT|SEALED/);
 });
-test("owner authorization and complete public inventory are enforced", () => {
-  assert.equal(verifyControlBindings(auth).entries, 40);
+test("consumed WP-118 inventory fails closed after WP-121 public-tree remediation", () => {
+  assert.throws(() => verifyControlBindings(auth), /PUBLIC_INVENTORY_COVERAGE/);
   assert.throws(() => verifyControlBindings({ ...auth, ownerAuthorizationSha256: "f".repeat(64) }), /OWNER_AUTHORIZATION_HASH/);
 });
 test("exclusive network lock denies a concurrent holder and releases cleanly", () => {
@@ -247,7 +280,7 @@ test("exclusive network lock denies a concurrent holder and releases cleanly", (
 test("combined public inventory verifies without network", () => {
   const result = verifyNetworkLauncher(root);
   assert.equal(result.result, "PASS");
-  assert.equal(result.classification, "STATIC_OWNER_SIGNED_DESCRIPTOR_REMEDIATION_READY");
-  assert.equal(result.publicFiles, 28);
+  assert.equal(result.classification, "STATIC_RUN_BOUND_TRUST_ROOT_INTERFACE_REMEDIATED");
+  assert.equal(result.publicFiles, 30);
   assert.equal(result.networkPerformed, false);
 });

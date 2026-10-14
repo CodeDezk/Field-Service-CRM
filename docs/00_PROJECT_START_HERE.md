@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-120 accepted; exact publication authorized |
-| Current phase | Wave A Acquisition Execution Identity and Signing Authority Readiness |
-| Current work package | `WP-120 Wave A Acquisition Execution Identity, Signing Authority and Private Authorization Readiness` |
+| Status | Product Discovery closed — WP-121 independently validated PASS; owner result review required |
+| Current phase | Wave A Real Trust Root and Network Binding Static Remediation |
+| Current work package | `WP-121 Real Trust Root and Network Binding Static Remediation` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -163,6 +163,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 104. `112_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_AUTHORIZATION_READINESS.md`
 105. `113_WAVE_A_OFFLINE_ARTIFACT_ACQUISITION_REAUTHORIZATION_READINESS.md`
 106. `114_WAVE_A_ACQUISITION_EXECUTION_IDENTITY_SIGNING_AUTHORITY_READINESS.md`
+107. `115_WAVE_A_REAL_TRUST_ROOT_NETWORK_BINDING_STATIC_REMEDIATION.md`
 
 Current and later accepted work packages may add or mature:
 
@@ -3160,6 +3161,20 @@ a validator, perform preflight, contact a network, retrieve metadata, download/a
 restore dependencies, build, use devices, execute runtime proof, code the application, select
 architecture, create infrastructure, deploy, incur provider cost or use customer/live data. No
 WP-120 commit or push is authorized without later owner acceptance.
+
+## WP-120 verified publication and WP-121 primary static remediation — 2026-10-14
+
+The exact accepted WP-120 four-path public inventory was committed as
+`1f4c6f0 WP-120: accept signing authority readiness` and published at
+`1f4c6f0dbdf5141493a4086887518aca2ab47621`. WP-120 is closed and its publication authority is
+consumed.
+
+WP-121 remediated only the proof-control trust-root and prospective network-state bindings. The
+owner accepted the primary result and separately authorized one fresh zero-authority validator.
+Independent validation passed with no findings: 42/42 hashes, 59/59 tests, both public verifiers,
+the exact 17-path scope and fail-closed network boundary passed. No real key or network operation
+occurred. Validation authority is consumed; WP-121 stops for owner result acceptance and remains
+unauthorized for commit or push.
 
 ## Private execution control
 

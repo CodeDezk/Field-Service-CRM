@@ -7,11 +7,12 @@ export const EXPECTED_FILES = [
   ".gitignore", "AUTHORITY.md", "README.md",
   "fixtures/accepted-source-policy.json", "fixtures/synthetic-metadata-commit.json",
   "fixtures/synthetic-network-request.json", "fixtures/synthetic-run-bound-metadata-commit.json",
-  "fixtures/synthetic-owner-signing-key.json",
+  "fixtures/synthetic-owner-signing-key.json", "fixtures/synthetic-owner-trust-root.json",
   "fixtures/synthetic-source-catalog.json",
   "schemas/acquisition-receipt.schema.json", "schemas/artifact-inventory.schema.json",
   "schemas/metadata-commit.schema.json", "schemas/network-authorization.schema.json",
   "schemas/network-request.schema.json", "schemas/source-policy.schema.json", "schemas/static-authorization.schema.json",
+  "schemas/owner-trust-root.schema.json",
   "schemas/run-bound-metadata-commit.schema.json",
   "test/acquisition-extension-static.test.mjs", "test/acquisition-launcher-static.test.mjs",
   "test/trusted-network-launcher-static.test.mjs",
@@ -58,6 +59,7 @@ export function verifyExtension(root) {
     result: "PASS",
     classification: "STATIC_EXTENSION_WITH_NETWORK_LAUNCHER_SOURCE",
     publicFiles: found.length,
+    networkPerformed: false,
     files: found.map((path) => ({ path, sha256: sha256File(resolve(expectedRoot, path)) })),
   };
 }
