@@ -92,3 +92,10 @@ incur cost or use customer/live data.
 
 `WP-132 Signed Authority to Exact Network Gate Static Remediation` is authorized for proof-only
 static work. Network and all downstream execution remain closed.
+
+## Verified publication and WP-132 activation
+
+The frozen four-path WP-131 inventory was committed as
+`779df25 WP-131: accept network transition readiness` and published at
+`779df25866b9cbc38d16669e0f034e4b068c98bf`. Live `origin/main` and local `HEAD` matched.
+WP-132 then began within the accepted static-only boundary.

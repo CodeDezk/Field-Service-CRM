@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-131 network-transition readiness accepted; runtime/network closed |
-| Current phase | Wave A Effective Network Transition Static Remediation Readiness |
-| Current work package | `WP-131 Effective Network Transition Static Remediation Readiness` |
+| Status | Product Discovery closed — WP-132 independently validated PASS; owner review required |
+| Current phase | Wave A Signed Authority to Exact Network Gate Static Remediation |
+| Current work package | `WP-132 Signed Authority to Exact Network Gate Static Remediation` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -174,6 +174,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 115. `123_WAVE_A_REMEDIATED_REAL_SIGNING_MATERIALIZATION_REAUTHORIZATION_READINESS.md`
 116. `124_WAVE_A_CONTROLLED_REMEDIATED_REAL_SIGNING_MATERIALIZATION_RESULT.md`
 117. `125_WAVE_A_EFFECTIVE_NETWORK_TRANSITION_STATIC_REMEDIATION_READINESS.md`
+118. `126_WAVE_A_SIGNED_AUTHORITY_EXACT_NETWORK_GATE_STATIC_REMEDIATION.md`
 
 Current and later accepted work packages may add or mature:
 

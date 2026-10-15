@@ -48,6 +48,24 @@ SHELL_BINDING = {
     "readOnlyMount": "/",
 }
 
+NETWORK_TRANSITION_FLAGS = frozenset({
+    "network", "dns", "metadataRetrieval", "download", "artifactAcquisition",
+})
+
+NETWORK_TRANSITION_CLOSED_FLAGS = frozenset({
+    "sdkOrCacheMutation", "dependencyRestore", "build", "device", "runtime",
+    "proofExecution", "applicationCoding", "architectureSelection", "infrastructure",
+    "deployment", "providerOrCost", "customerOrLiveData", "commitOrPush",
+})
+
+NETWORK_TRANSITION_LIMITS = {
+    "maximumAttemptsBeforeAcceptedBytes": 3,
+    "maximumDurationSeconds": 2700,
+    "maximumObjects": 2000,
+    "maximumSingleResponseBytes": 2147483648,
+    "maximumTotalBytes": 4294967296,
+}
+
 
 class ControlStop(RuntimeError):
     pass
@@ -425,7 +443,101 @@ def require_trusted_bootstrap():
     if not isinstance(authorization_hash, str) or len(authorization_hash) != 64:
         raise ControlStop("TRUSTED_BOOTSTRAP_AUTHORIZATION_BINDING")
     return {"launcherSha256": captured, "authorizationSha256": authorization_hash,
-            "ownerSigningKeyId": signing_key_id, "ownerTrustRootSha256": trust_root_hash}
+            "ownerSigningKeyId": signing_key_id, "ownerTrustRootSha256": trust_root_hash,
+            "authorization": authorization}
+
+
+def validate_signed_network_transition(bootstrap, presented_enablement, request_sha256,
+                                       ledger_path, output_root, executor):
+    """Validate the signed gate and call only the explicitly supplied execution seam."""
+    authorization = bootstrap.get("authorization")
+    if not isinstance(authorization, dict) or authorization.get("state") != "EFFECTIVE_NETWORK":
+        raise ControlStop("NETWORK_AUTHORITY_STATE")
+    if authorization.get("consumed") is not False or authorization.get("singleUse") is not True:
+        raise ControlStop("NETWORK_AUTHORITY_LIFECYCLE")
+    if authorization.get("networkEnablementSha256") != sha256_bytes(presented_enablement):
+        raise ControlStop("NETWORK_ENABLEMENT_BINDING")
+    if (not isinstance(request_sha256, str) or len(request_sha256) != 64 or
+            request_sha256 not in authorization.get("allowedRequestSha256s", [])):
+        raise ControlStop("NETWORK_REQUEST_BINDING")
+    if (not os.path.isabs(ledger_path) or authorization.get("ledgerPath") != ledger_path or
+            not os.path.isabs(output_root) or authorization.get("outputRoot") != output_root):
+        raise ControlStop("NETWORK_PATH_BINDING")
+    if authorization.get("limits") != NETWORK_TRANSITION_LIMITS:
+        raise ControlStop("NETWORK_LIMIT_BINDING")
+    flags = authorization.get("actionFlags")
+    if not isinstance(flags, dict):
+        raise ControlStop("NETWORK_FLAGS")
+    if any(flags.get(name) is not True for name in NETWORK_TRANSITION_FLAGS):
+        raise ControlStop("NETWORK_REQUIRED_FLAG")
+    if any(flags.get(name) is not False for name in NETWORK_TRANSITION_CLOSED_FLAGS):
+        raise ControlStop("NETWORK_CLOSED_FLAG")
+    if set(flags) != NETWORK_TRANSITION_FLAGS | NETWORK_TRANSITION_CLOSED_FLAGS:
+        raise ControlStop("NETWORK_FLAG_SET")
+    if not callable(executor):
+        raise ControlStop("NETWORK_EXECUTION_SEAM")
+    result = executor({
+        "authorizationSha256": bootstrap.get("authorizationSha256"),
+        "requestSha256": request_sha256,
+        "ledgerPath": ledger_path,
+        "outputRoot": output_root,
+    })
+    return {
+        "result": "PASS_SIGNED_NETWORK_TRANSITION_STATIC_SURROGATE",
+        "networkPerformed": False,
+        "networkChildProcessCreated": False,
+        "surrogateResult": result,
+    }
+
+
+def transition_self_test():
+    enablement = b"wp132-static-surrogate-enable"
+    request_sha256 = "b" * 64
+    ledger_path = "/private/tmp/wp132-static-ledger.ndjson"
+    output_root = "/private/tmp/wp132-static-output"
+    flags = {name: True for name in NETWORK_TRANSITION_FLAGS}
+    flags.update({name: False for name in NETWORK_TRANSITION_CLOSED_FLAGS})
+    authorization = {
+        "state": "EFFECTIVE_NETWORK", "consumed": False, "singleUse": True,
+        "networkEnablementSha256": sha256_bytes(enablement),
+        "allowedRequestSha256s": [request_sha256], "ledgerPath": ledger_path,
+        "outputRoot": output_root, "limits": NETWORK_TRANSITION_LIMITS,
+        "actionFlags": flags,
+    }
+    bootstrap = {"authorization": authorization, "authorizationSha256": "a" * 64}
+    receipt = validate_signed_network_transition(
+        bootstrap, enablement, request_sha256, ledger_path, output_root,
+        lambda binding: {"classification": "SUBSTITUTED_EXECUTOR", **binding},
+    )
+    rejected = []
+    cases = [
+        ("STATIC_STATE", {**authorization, "state": "EFFECTIVE_STATIC_ONLY"}, enablement,
+         request_sha256, ledger_path, output_root, "NETWORK_AUTHORITY_STATE"),
+        ("ENABLEMENT_DRIFT", authorization, b"wrong", request_sha256, ledger_path,
+         output_root, "NETWORK_ENABLEMENT_BINDING"),
+        ("REQUEST_DRIFT", authorization, enablement, "c" * 64, ledger_path,
+         output_root, "NETWORK_REQUEST_BINDING"),
+        ("LEDGER_DRIFT", authorization, enablement, request_sha256, ledger_path + ".wrong",
+         output_root, "NETWORK_PATH_BINDING"),
+        ("OUTPUT_DRIFT", authorization, enablement, request_sha256, ledger_path,
+         output_root + ".wrong", "NETWORK_PATH_BINDING"),
+        ("CONSUMED", {**authorization, "consumed": True}, enablement, request_sha256,
+         ledger_path, output_root, "NETWORK_AUTHORITY_LIFECYCLE"),
+    ]
+    for name, candidate, token, request, ledger, output, expected in cases:
+        try:
+            validate_signed_network_transition(
+                {"authorization": candidate, "authorizationSha256": "a" * 64},
+                token, request, ledger, output, lambda _binding: "PROHIBITED",
+            )
+        except ControlStop as error:
+            if str(error) != expected:
+                raise
+            rejected.append(name)
+        else:
+            raise ControlStop("NETWORK_NEGATIVE_CONTROL")
+    receipt["rejected"] = rejected
+    return receipt
 
 
 def _seed_entry(authority_hash, run_id):
@@ -541,12 +653,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--network", action="store_true")
+    parser.add_argument("--transition-self-test", action="store_true")
     arguments = parser.parse_args()
     if arguments.self_test and not arguments.network:
         print(canonical_json(self_test()))
         return
+    if arguments.transition_self_test and not arguments.network and not arguments.self_test:
+        print(canonical_json(transition_self_test()))
+        return
     require_trusted_bootstrap()
-    raise ControlStop("NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121")
+    raise ControlStop("NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132")
 
 
 if __name__ == "__main__":

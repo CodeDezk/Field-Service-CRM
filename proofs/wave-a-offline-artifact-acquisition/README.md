@@ -111,7 +111,7 @@ network, acquisition and publication gate remain separate.
 
 WP-125 adds an exact pre-network bootstrap invocation contract. It supplies a sanitized
 `TMPDIR=/tmp`, preventing the macOS `DARWIN_USER_TEMP_DIR` `confstr()` warning. The result oracle
-still requires exit `1`, empty stdout and exactly `NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121` on
+still requires exit `1`, empty stdout and exactly `NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132` on
 stderr. No warning or other diagnostic is filtered or reinterpreted.
 
 WP-128 adds a pre-key helper-resolution control. The caller supplies an explicit absolute
@@ -120,4 +120,9 @@ repository-relative path, verifies its SHA-256 and required exports, and only th
 preflight pass. It does not generate keys or authorize signing, network, acquisition or runtime
 work. Paths containing spaces are supported without shell evaluation; relative or wrong-depth
 roots and hash drift fail closed.
+
+WP-132 adds a signed network-transition gate with a dependency-free substituted execution seam.
+Its static self-test proves that an exact `EFFECTIVE_NETWORK` authority can reach only the
+surrogate seam after enablement, request, ledger, output, limit and action-flag checks. Static,
+consumed and drifted cases fail closed. The runtime entry still terminates before curl or network.
 

@@ -168,7 +168,7 @@ use a non-synthetic key ID and be mode `0600`.
 The network contract may validate a prospective non-synthetic revision, tree, key ID and trust-root
 hash only when the caller supplies matching expected bindings and explicitly enables validation of
 the network state. This is a static interface, not execution authority: the trusted launcher still
-terminates every network entry with `NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121` and no curl child
+terminates every network entry at the published closed boundary and no curl child
 may start. The consumed WP-118 inventory must fail closed after the public tree changes.
 
 WP-121 authorizes no real key, network, metadata, download, acquired artifact, dependency, build,
@@ -192,4 +192,13 @@ and import-check its required exports before any key-generation operation. Works
 containing spaces must remain literal. Relative roots, wrong-depth roots, escaped paths and hash
 drift fail closed. WP-128 grants no real-key, signing, network, acquisition, dependency or runtime
 authority.
+
+## WP-132 signed network-transition static boundary
+
+WP-132 permits only dependency-free static proof of the transition from a signed
+`EFFECTIVE_NETWORK` authority to a substituted execution seam. The signed authority must bind a
+run-specific enablement hash, exact request hash, absolute ledger and output paths, exact limits,
+and the complete action-flag set. Static-only, synthetic, missing, consumed or drifted authority
+fails closed. The public runtime entry remains terminated by
+`NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132`; `/usr/bin/curl` is never invoked by WP-132.
 

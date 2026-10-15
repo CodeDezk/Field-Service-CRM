@@ -48,7 +48,9 @@ test("launcher binds system Python and curl on the read-only system volume", () 
 test("launcher requires bootstrap capture for every non-self-test path", () => {
   assert.match(launcher, /def require_trusted_bootstrap/);
   assert.match(launcher, /TRUSTED_BOOTSTRAP_REQUIRED/);
-  assert.match(launcher, /NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121/);
+  assert.match(launcher, /NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132/);
+  assert.match(launcher, /def validate_signed_network_transition/);
+  assert.match(launcher, /networkEnablementSha256/);
 });
 
 test("ledger holds one no-follow descriptor for lock verify budget and append", () => {
@@ -307,7 +309,7 @@ test("run-bound surrogate trust root reaches only the closed network boundary", 
       encoding: "utf8", env: { PATH: "/usr/bin:/bin", LANG: "C", LC_ALL: "C" },
     });
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121/);
+    assert.match(result.stderr, /NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132/);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -370,4 +372,20 @@ test("direct network entry fails before any operation", () => {
   });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /TRUSTED_BOOTSTRAP_REQUIRED/);
+});
+
+test("signed network transition reaches only the substituted static execution seam", () => {
+  const result = spawnSync("/usr/bin/python3", ["-I", "-S", launcherPath, "--transition-self-test"], {
+    encoding: "utf8",
+    env: { PATH: "/usr/bin:/bin", LANG: "C", LC_ALL: "C" },
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const receipt = JSON.parse(result.stdout);
+  assert.equal(receipt.result, "PASS_SIGNED_NETWORK_TRANSITION_STATIC_SURROGATE");
+  assert.equal(receipt.networkPerformed, false);
+  assert.equal(receipt.networkChildProcessCreated, false);
+  assert.equal(receipt.surrogateResult.classification, "SUBSTITUTED_EXECUTOR");
+  assert.deepEqual(receipt.rejected, [
+    "STATIC_STATE", "ENABLEMENT_DRIFT", "REQUEST_DRIFT", "LEDGER_DRIFT", "OUTPUT_DRIFT", "CONSUMED",
+  ]);
 });

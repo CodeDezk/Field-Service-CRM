@@ -107,11 +107,13 @@ export function verifyNetworkLauncher(root) {
   for (const required of ["LedgerSession", "OutputSession", "fcntl.flock(self.descriptor",
     "LEDGER_RESERVED_FIELD", "LEDGER_PATH_IDENTITY", "OUTPUT_PATH_IDENTITY",
     "verify_system_sealed_descriptor", "flock(self.anchor_descriptor",
-    '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121"]) {
+    '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132",
+    "validate_signed_network_transition", "networkEnablementSha256",
+    "PASS_SIGNED_NETWORK_TRANSITION_STATIC_SURROGATE"]) {
     if (!trustedLauncher.includes(required)) throw new Error(`TRUSTED_LAUNCHER_CONTROL:${required}`);
   }
   for (const required of ["TMPDIR: \"/tmp\"", "BOOTSTRAP_STDERR",
-    "NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121", "spawnSync(\"/usr/bin/python3\""]) {
+    "NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132", "spawnSync(\"/usr/bin/python3\""]) {
     if (!invocation.includes(required)) throw new Error(`PRE_NETWORK_INVOCATION_CONTROL:${required}`);
   }
   for (const required of ["HELPER_REPOSITORY_PATH", "REPOSITORY_ROOT_NOT_ABSOLUTE",
