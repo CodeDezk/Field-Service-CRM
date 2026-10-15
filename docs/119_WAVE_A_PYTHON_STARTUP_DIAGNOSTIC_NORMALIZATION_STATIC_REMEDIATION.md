@@ -111,3 +111,16 @@ tests, both verifier passes, the renewed 44-file proof inventory, exact 12-path 
 final candidate-index hash, independent PASS with zero findings and consumed validator authority.
 The owner authorized publication of only the exact 12-path public/proof inventory. All execution
 and downstream gates remain closed.
+
+## Verified publication and WP-126 activation
+
+The exact accepted 12-path WP-125 public/proof inventory was committed as
+`5c26e4f WP-125: validate diagnostic normalization controls` and published at
+`5c26e4fe71923a2b5bd13a27faa28e7f550d1347`, repository tree
+`fbe7fbcf78dbfdb38dd8b2467fdf2b74075f8650`, proof tree
+`0a697f4cecbb4044c9ec34f1cce58b6e7a344f74`. Live `origin/main` and local `HEAD` matched. WP-125
+is closed and its publication authority is consumed.
+
+WP-126 is active for owner-decision documentation and one private ineffective reauthorization
+draft only. Real key creation, signing, validator instantiation, network and all downstream gates
+remain closed.

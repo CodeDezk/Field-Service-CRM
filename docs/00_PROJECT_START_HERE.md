@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-125 accepted; exact publication authorized |
-| Current phase | Wave A Python Startup Diagnostic Normalization Static Remediation |
-| Current work package | `WP-125 Python Startup Diagnostic Normalization Remediation` |
+| Status | Product Discovery closed — WP-126 accepted; exact publication authorized |
+| Current phase | Wave A Remediated Real Signing Materialization Reauthorization Readiness |
+| Current work package | `WP-126 Remediated Real Signing Materialization Reauthorization Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -168,6 +168,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 109. `117_WAVE_A_REAL_SIGNING_RUN_CONTROL_MATERIALIZATION_AUTHORIZATION_READINESS.md`
 110. `118_WAVE_A_CONTROLLED_REAL_SIGNING_PRE_NETWORK_MATERIALIZATION_RESULT.md`
 111. `119_WAVE_A_PYTHON_STARTUP_DIAGNOSTIC_NORMALIZATION_STATIC_REMEDIATION.md`
+112. `120_WAVE_A_REMEDIATED_REAL_SIGNING_MATERIALIZATION_REAUTHORIZATION_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 
