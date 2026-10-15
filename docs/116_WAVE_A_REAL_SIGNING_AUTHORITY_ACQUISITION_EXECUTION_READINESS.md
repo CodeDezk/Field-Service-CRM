@@ -143,3 +143,16 @@ rejected options 002 through 004; accepted `/root` only as the proposed temporal
 custodian/operator; and accepted the ineffective private draft and root validation PASS. The owner
 authorized publication of only the exact four-path public inventory. All execution gates remain
 closed.
+
+## Verified publication and WP-123 activation
+
+The exact accepted four-path WP-122 public inventory was committed as
+`95626fb WP-122: accept signing execution readiness` and published at
+`95626fbec8b4a68629d51acd11e733ffc3ec5d50`, repository tree
+`584a46d9c0e2bcbbb73b99383f5f0408b0860c17`, with unchanged proof tree
+`0f3e9dc514c0d6456745bb5ab1df003d5d2e0494`. Live `origin/main` and local `HEAD` matched. WP-122
+is closed and its publication authority is consumed.
+
+WP-123 is active for owner-decision documentation and one private ineffective materialization
+draft only. Real key creation, signing, effective authorization, validator instantiation, network
+and every downstream gate remain closed.
