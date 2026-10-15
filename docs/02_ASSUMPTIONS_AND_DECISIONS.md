@@ -305,6 +305,7 @@ Accepted.
 | `DEC-255` | Accept an absolute repository-root-bound, hash-verified and import-checked helper preflight as the required control before any future signing-key creation. | This removes private-directory-depth assumptions while preserving exact published bytes, required exports and fail-closed behavior. | Accepted |
 | `DEC-256` | Classify the WP-128 publication as ready to support one separately authorized fresh real-signing materialization attempt using the exact pre-key preflight. | The helper-resolution defect is independently remediated, but every key, role and execution action still requires a new run-bound authorization. | Accepted |
 | `DEC-257` | Accept WP-130 as a validated, closed, single-use pre-network signing materialization result and prohibit reuse of its private authority or destroyed key. | The pre-key gate, signature verification, exact closed-boundary stop, independent review and cleanup all passed without network. | Accepted under standing owner authorization |
+| `DEC-258` | Require a separately reviewed proof-static network-transition remediation before any effective acquisition authorization can exist. | The accepted launcher deliberately stops before network and WP-130's static-only authority is consumed; neither may be bypassed or promoted. | Accepted under standing owner authorization |
 
 ## Open decision register
 

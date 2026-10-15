@@ -61,3 +61,13 @@ network, downloads, acquisition, dependencies, runtime, application coding, fina
 selection, infrastructure, deployment, provider/cost and customer/live data remain closed.
 
 The exact public result inventory is documents 00, 02, 123 and 124.
+
+## Verified publication and next control stage
+
+The frozen four-path WP-130 result inventory was committed as
+`28f5d71 WP-130: record validated signing materialization` and published at
+`28f5d71190857dc59eed9edbcd924dd64190055c`. Live `origin/main` and local `HEAD` matched.
+
+WP-131 is activated under standing owner authorization for network-transition readiness
+documentation only. The WP-130 authority remains consumed and non-promotable; network remains
+closed.

@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-130 validated and closed under standing owner authorization |
-| Current phase | Wave A Controlled Remediated Real Signing Materialization Result |
-| Current work package | `WP-130 Controlled Remediated Real Signing and Pre-Network Materialization` |
+| Status | Product Discovery closed — WP-131 network-transition readiness accepted; runtime/network closed |
+| Current phase | Wave A Effective Network Transition Static Remediation Readiness |
+| Current work package | `WP-131 Effective Network Transition Static Remediation Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -173,6 +173,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 114. `122_WAVE_A_EXACT_HELPER_RESOLUTION_PRE_KEY_PREFLIGHT_STATIC_REMEDIATION.md`
 115. `123_WAVE_A_REMEDIATED_REAL_SIGNING_MATERIALIZATION_REAUTHORIZATION_READINESS.md`
 116. `124_WAVE_A_CONTROLLED_REMEDIATED_REAL_SIGNING_MATERIALIZATION_RESULT.md`
+117. `125_WAVE_A_EFFECTIVE_NETWORK_TRANSITION_STATIC_REMEDIATION_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 
