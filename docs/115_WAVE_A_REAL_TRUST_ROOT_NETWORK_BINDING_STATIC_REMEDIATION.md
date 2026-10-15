@@ -130,3 +130,16 @@ network rejection, run-bound drift rejection and the unconditional pre-process n
 real key, network, artifact, dependency, runtime, commit or push occurred. Validation authority is
 consumed. WP-121 is `STATIC_CONTROL_REMEDIATED_VALIDATED` and now stops for owner result acceptance
 and separate publication authorization.
+
+## Verified publication and WP-122 activation
+
+The exact accepted 17-path WP-121 inventory was committed as
+`66f0f85 WP-121: validate run-bound trust root controls` and published at
+`66f0f857b987e49f392919802bc829113a783713`, repository tree
+`37353f5a1c4ea59f2309ee1e17aaae3f4be6b309`, with proof tree
+`0f3e9dc514c0d6456745bb5ab1df003d5d2e0494`. Live `origin/main` and local `HEAD` matched. WP-121
+is closed and its publication authority is consumed.
+
+WP-122 is active for owner-decision documentation and one private ineffective draft only. Real key
+creation, signing, effective authorization, validator instantiation, network, acquisition and all
+downstream gates remain closed.
