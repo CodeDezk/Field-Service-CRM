@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-126 accepted; exact publication authorized |
-| Current phase | Wave A Remediated Real Signing Materialization Reauthorization Readiness |
-| Current work package | `WP-126 Remediated Real Signing Materialization Reauthorization Readiness` |
+| Status | Product Discovery closed — WP-127 inconclusive; owner review required |
+| Current phase | Wave A Controlled Remediated Real Signing Materialization Result |
+| Current work package | `WP-127 Controlled Remediated Real Signing and Pre-Network Materialization` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -169,6 +169,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 110. `118_WAVE_A_CONTROLLED_REAL_SIGNING_PRE_NETWORK_MATERIALIZATION_RESULT.md`
 111. `119_WAVE_A_PYTHON_STARTUP_DIAGNOSTIC_NORMALIZATION_STATIC_REMEDIATION.md`
 112. `120_WAVE_A_REMEDIATED_REAL_SIGNING_MATERIALIZATION_REAUTHORIZATION_READINESS.md`
+113. `121_WAVE_A_CONTROLLED_REMEDIATED_REAL_SIGNING_MATERIALIZATION_RESULT.md`
 
 Current and later accepted work packages may add or mature:
 

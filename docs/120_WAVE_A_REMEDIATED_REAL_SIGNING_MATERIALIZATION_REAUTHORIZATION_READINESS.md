@@ -114,3 +114,13 @@ The owner accepted `DEC-253`, every WP-126 fact, binding and decision; accepted 
 run, root, roles and tool bindings; advanced option 001; retained option 005 only as an
 evidence-equivalent fallback; rejected options 002 through 004; accepted the ineffective draft and
 root validation PASS; and authorized publication of only the exact four-path public inventory.
+
+## Verified publication and WP-127 result
+
+The accepted four-path WP-126 inventory was committed as
+`1da6899 WP-126: accept rematerialization readiness` and published at
+`1da689912c2bca356bc365a4a8ad1ccb644f6ce7`. Live `origin/main` and local `HEAD` matched.
+
+WP-127 stopped before key generation under `WP127-DEV-001` because the private materializer's
+relative helper import resolved beneath `internal-local/`. Cleanup passed, no key or network state
+existed, the validator gate did not open, and no retry is authorized.
