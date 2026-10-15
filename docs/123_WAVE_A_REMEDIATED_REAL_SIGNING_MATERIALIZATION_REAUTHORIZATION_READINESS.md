@@ -109,3 +109,16 @@ authorization, network or downstream action.
 
 The exact public candidate inventory is documents 00, 02, 122 and 123. WP-129 stops for owner
 review. No commit or push is authorized.
+
+## Standing owner authorization and verified publication
+
+The owner granted standing authority to stop requiring copied authorization text while retaining
+the recorded hard closed boundaries. Under that authority, `DEC-256`, all WP-129 facts, bindings,
+decisions, proposed identities, exact tools and ineffective draft were accepted. Option 001
+advanced; option 005 remained an evidence-equivalent fallback; options 002 through 004 were
+rejected.
+
+The frozen four-path public inventory was committed as
+`da7dd61 WP-129: accept signing materialization readiness` and published at
+`da7dd6167fac1d6a185684aa3bea5bb9183a987b`. Live `origin/main` and local `HEAD` matched before
+WP-130 began.
