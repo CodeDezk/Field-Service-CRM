@@ -107,3 +107,17 @@ local Python/shell subprocess self-tests. It creates no real signing authority o
 
 WP-132 is `STATIC_SIGNED_NETWORK_GATE_REMEDIATED_VALIDATED` and stops for owner result acceptance.
 Commit, push, real signing, effective authorization, network and acquisition remain closed.
+
+## Owner acceptance and verified publication
+
+The owner accepted `DEC-259`, all WP-132 facts, remediations, bindings and decisions, 68/68 tests,
+both 34-file verifiers, the renewed 46-file proof inventory, exact ten-path candidate inventory,
+final candidate-index hash, independent PASS with zero findings, consumed validator authority and
+the recorded static-suite limitation.
+
+The frozen ten-path public/proof inventory was committed as
+`7e4a1f4 WP-132: validate signed network transition gate` and published at
+`7e4a1f47b526786c233b72eff0f151366055d6c3`, repository tree
+`47d541b02fa72d37572220696d1fc5cd618f5222`, proof tree
+`1c20b3932884e0e2f9a9d96f42e40eaf202fc33e`. Live `origin/main` and local `HEAD` matched.
+WP-133 is active for owner-decision documentation and one ineffective private draft only.
