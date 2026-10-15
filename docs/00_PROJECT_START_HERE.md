@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-123 accepted; exact publication authorized |
-| Current phase | Wave A Real Signing and Run-Control Materialization Authorization Readiness |
-| Current work package | `WP-123 Real Signing and Run-Control Materialization Authorization Readiness` |
+| Status | Product Discovery closed — WP-124 accepted; exact publication authorized |
+| Current phase | Wave A Controlled Real Signing and Pre-Network Materialization Result |
+| Current work package | `WP-124 Controlled Real Signing and Pre-Network Run-Control Materialization` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -166,6 +166,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 107. `115_WAVE_A_REAL_TRUST_ROOT_NETWORK_BINDING_STATIC_REMEDIATION.md`
 108. `116_WAVE_A_REAL_SIGNING_AUTHORITY_ACQUISITION_EXECUTION_READINESS.md`
 109. `117_WAVE_A_REAL_SIGNING_RUN_CONTROL_MATERIALIZATION_AUTHORIZATION_READINESS.md`
+110. `118_WAVE_A_CONTROLLED_REAL_SIGNING_PRE_NETWORK_MATERIALIZATION_RESULT.md`
 
 Current and later accepted work packages may add or mature:
 

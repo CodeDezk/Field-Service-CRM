@@ -144,3 +144,16 @@ accepted the exact run, root, Node and proposed role bindings; advanced option 0
 publication of only the exact four-path public inventory. After verified publication, WP-124 may
 perform only the separately bounded pre-network materialization. Network and all downstream gates
 remain closed.
+
+## Verified publication and WP-124 result
+
+The exact accepted four-path WP-123 inventory was committed as
+`6c0d184 WP-123: accept signing materialization readiness` and published at
+`6c0d184b182e95d7dc778ad1db1094a189824db8`, repository tree
+`f38d4378db0ceb12bc3b7165f4d6b0dbf4cfbb0e`, with unchanged proof tree
+`0f3e9dc514c0d6456745bb5ab1df003d5d2e0494`. Live `origin/main` and local `HEAD` matched.
+
+WP-124 stopped fail-closed as `INCONCLUSIVE` under `WP124-DEV-001` when the expected closed network
+stop was accompanied by an unmodeled macOS Python startup warning. The private key was destroyed,
+residual checks passed, no network occurred and the packet never reached validator handoff. No
+retry, commit or push is authorized.
