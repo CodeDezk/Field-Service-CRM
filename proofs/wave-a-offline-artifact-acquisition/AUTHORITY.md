@@ -175,3 +175,11 @@ WP-121 authorizes no real key, network, metadata, download, acquired artifact, d
 device, runtime proof, application code, architecture selection, infrastructure, deployment,
 provider/cost, customer/live data, commit or push.
 
+## WP-125 pre-network diagnostic normalization boundary
+
+WP-125 permits only proof-static prevention of the exact macOS Python startup warning observed by
+WP-124. Future pre-network bootstrap verification must use the exact sanitized environment,
+including `TMPDIR=/tmp`, and retain the exact terminal-stop oracle. Prevention is permitted;
+pattern filtering, diagnostic suppression, or reinterpretation of unexpected stderr remains
+prohibited. WP-125 grants no real-key, network, acquisition, dependency or runtime authority.
+

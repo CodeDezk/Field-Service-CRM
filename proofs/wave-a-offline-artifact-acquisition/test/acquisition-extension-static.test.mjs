@@ -70,5 +70,5 @@ test("network-capable source tokens fail", () => {
 test("public inventory and fixtures verify", () => {
   const result = verifyExtension(root);
   assert.equal(result.result, "PASS");
-  assert.equal(result.publicFiles, 30);
+  assert.equal(result.publicFiles, 32);
 });

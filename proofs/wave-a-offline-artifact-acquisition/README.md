@@ -109,3 +109,8 @@ WP-116 uses the same result meanings. Its successful primary static result means
 WP-115 findings have a statically testable remediation contract; independent validation and every
 network, acquisition and publication gate remain separate.
 
+WP-125 adds an exact pre-network bootstrap invocation contract. It supplies a sanitized
+`TMPDIR=/tmp`, preventing the macOS `DARWIN_USER_TEMP_DIR` `confstr()` warning. The result oracle
+still requires exit `1`, empty stdout and exactly `NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121` on
+stderr. No warning or other diagnostic is filtered or reinterpreted.
+

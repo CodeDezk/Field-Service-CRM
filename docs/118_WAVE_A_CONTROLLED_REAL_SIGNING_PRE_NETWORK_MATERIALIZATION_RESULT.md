@@ -115,3 +115,14 @@ decisions; accepted the expected closed-boundary result, cleanup, private-key re
 signature verification passes; accepted the nine-entry private inventory and index hash; consumed
 signing-custodian authority; accepted the no-validator disposition; and closed the run without
 retry or material reuse. Publication is authorized only for the exact four-path public inventory.
+
+## Verified publication and WP-125 activation
+
+The exact accepted four-path WP-124 result inventory was committed as
+`dc57ee7 WP-124: accept stopped signing materialization result` and published at
+`dc57ee7ddb231675e4a63679e82a6315de36a96e`, repository tree
+`d01875ceb6a380df4c7be8b8d72901fa0cd21865`, with unchanged proof tree
+`0f3e9dc514c0d6456745bb5ab1df003d5d2e0494`. Live `origin/main` and local `HEAD` matched.
+
+WP-125 is active only for proof-static diagnostic prevention and exact-oracle preservation. Real
+key creation, signing, effective authorization, network and every downstream gate remain closed.

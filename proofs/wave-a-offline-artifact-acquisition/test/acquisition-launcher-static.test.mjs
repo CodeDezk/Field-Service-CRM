@@ -280,7 +280,7 @@ test("exclusive network lock denies a concurrent holder and releases cleanly", (
 test("combined public inventory verifies without network", () => {
   const result = verifyNetworkLauncher(root);
   assert.equal(result.result, "PASS");
-  assert.equal(result.classification, "STATIC_RUN_BOUND_TRUST_ROOT_INTERFACE_REMEDIATED");
-  assert.equal(result.publicFiles, 30);
+  assert.equal(result.classification, "STATIC_PRE_NETWORK_DIAGNOSTIC_NORMALIZATION_REMEDIATED");
+  assert.equal(result.publicFiles, 32);
   assert.equal(result.networkPerformed, false);
 });
