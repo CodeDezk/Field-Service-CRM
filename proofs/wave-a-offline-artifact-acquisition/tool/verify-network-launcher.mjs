@@ -107,10 +107,10 @@ export function verifyNetworkLauncher(root) {
   for (const required of ["LedgerSession", "OutputSession", "fcntl.flock(self.descriptor",
     "LEDGER_RESERVED_FIELD", "LEDGER_PATH_IDENTITY", "OUTPUT_PATH_IDENTITY",
     "verify_system_sealed_descriptor", "flock(self.anchor_descriptor",
-    '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132",
+    '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_RUNTIME_ARGUMENTS",
     "validate_signed_network_transition", "networkEnablementSha256",
     "PASS_SIGNED_NETWORK_TRANSITION_STATIC_SURROGATE", "validate_run_bound_runtime_entry",
-    "PASS_RUN_BOUND_RUNTIME_ENTRY_STATIC_SURROGATE", "sourcePolicySha256"]) {
+    "execute_authenticated_network_child", "PASS_RUN_BOUND_RUNTIME_ENTRY", "sourcePolicySha256"]) {
     if (!trustedLauncher.includes(required)) throw new Error(`TRUSTED_LAUNCHER_CONTROL:${required}`);
   }
   for (const required of ["TMPDIR: \"/tmp\"", "BOOTSTRAP_STDERR",

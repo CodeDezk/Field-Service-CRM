@@ -131,3 +131,7 @@ hashes, source-policy bytes and exact request bytes before an internally injecte
 Revision, tool, policy and request drift fail closed. The actual runtime entry remains stopped
 before curl and network.
 
+WP-137 statically connects the trusted real entry to the run-bound validator and internal curl
+adapter. The 70-test suite uses only local surrogate execution; no key, authorization, curl,
+network, download or acquisition is created by this remediation.
+

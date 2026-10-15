@@ -48,7 +48,7 @@ test("launcher binds system Python and curl on the read-only system volume", () 
 test("launcher requires bootstrap capture for every non-self-test path", () => {
   assert.match(launcher, /def require_trusted_bootstrap/);
   assert.match(launcher, /TRUSTED_BOOTSTRAP_REQUIRED/);
-  assert.match(launcher, /NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132/);
+  assert.match(launcher, /NETWORK_RUNTIME_ARGUMENTS/);
   assert.match(launcher, /def validate_signed_network_transition/);
   assert.match(launcher, /networkEnablementSha256/);
 });
@@ -309,7 +309,7 @@ test("run-bound surrogate trust root reaches only the closed network boundary", 
       encoding: "utf8", env: { PATH: "/usr/bin:/bin", LANG: "C", LC_ALL: "C" },
     });
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132/);
+    assert.match(result.stderr, /NETWORK_RUNTIME_ARGUMENTS/);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -397,10 +397,23 @@ test("run-bound runtime entry binds fresh tools, source policy and request befor
   });
   assert.equal(result.status, 0, result.stderr);
   const receipt = JSON.parse(result.stdout);
-  assert.equal(receipt.result, "PASS_RUN_BOUND_RUNTIME_ENTRY_STATIC_SURROGATE");
+  assert.equal(receipt.result, "PASS_RUN_BOUND_RUNTIME_ENTRY");
   assert.equal(receipt.networkPerformed, false);
   assert.equal(receipt.networkChildProcessCreated, false);
   assert.equal(receipt.surrogateResult.classification, "SUBSTITUTED_RUNTIME_CHILD");
   assert.equal(receipt.surrogateResult.request.schema, "wave-a-network-request-v1");
   assert.deepEqual(receipt.rejected, ["REVISION_DRIFT", "TOOL_DRIFT", "POLICY_DRIFT", "REQUEST_DRIFT"]);
+});
+
+test("authenticated real dispatch injects only the internal curl adapter after bootstrap", () => {
+  assert.match(launcher, /bootstrap = require_trusted_bootstrap\(\)/);
+  assert.match(launcher, /validate_run_bound_runtime_entry\([\s\S]*execute_authenticated_network_child/);
+  assert.match(launcher, /def execute_authenticated_network_child\(binding\):/);
+  assert.match(launcher, /result = execute_bound_curl\(request, output\)/);
+  assert.doesNotMatch(launcher, /parser\.add_argument\("--executor"/);
+  assert.doesNotMatch(launcher, /NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132/);
+  for (const argument of ["--enablement", "--request", "--source-policy", "--ledger",
+    "--output-root", "--expected-bindings"]) {
+    assert.match(launcher, new RegExp(`parser\\.add_argument\\(\\"${argument}`));
+  }
 });

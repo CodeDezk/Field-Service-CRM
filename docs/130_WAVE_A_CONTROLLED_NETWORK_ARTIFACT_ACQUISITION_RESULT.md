@@ -4,7 +4,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Proposed result — owner acceptance required |
+| Status | Accepted and published |
 | Work package | `WP-136 Controlled Wave A Network Artifact Acquisition` |
 | Run ID | `wp136-2026-10-15-01` |
 | Owner | Aung Myo Oo |
@@ -85,4 +85,7 @@ Medium 0 and Low 0; validator authority is consumed.
 No real authority or network behavior was measured. The result proves only that the currently
 published execution route is unreachable and fails closed before sensitive action. After
 independent stop-packet validation, which passed with zero findings. WP-136 stops for owner result
-acceptance. No commit or push is authorized.
+acceptance. The accepted four-path result was published at
+`5dbd14ca5f00080b9bdecaae158d82c166e13611`, repository tree
+`f5c5ea687bf4d593d7d913dee7a23521080f5b10`; live `origin/main` matched. Publication activated
+WP-137 static remediation only.

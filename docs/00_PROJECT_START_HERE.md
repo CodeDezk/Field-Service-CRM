@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-136 independently validated stop; owner acceptance required |
-| Current phase | Controlled Wave A Network Artifact Acquisition Result |
-| Current work package | `WP-136 Controlled Wave A Network Artifact Acquisition` |
+| Status | Product Discovery closed — WP-137 stopped on independent static finding; execution closed |
+| Current phase | Authenticated Real Runtime Dispatch Static Remediation Result Review |
+| Current work package | `WP-137 Authenticated Real Runtime Dispatch Static Remediation` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -179,6 +179,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 120. `128_WAVE_A_RUN_BOUND_NETWORK_RUNTIME_ENTRY_STATIC_REMEDIATION.md`
 121. `129_WAVE_A_NETWORK_EXECUTION_IDENTITY_EFFECTIVE_AUTHORIZATION_READINESS.md`
 122. `130_WAVE_A_CONTROLLED_NETWORK_ARTIFACT_ACQUISITION_RESULT.md`
+123. `131_WAVE_A_AUTHENTICATED_REAL_RUNTIME_DISPATCH_STATIC_REMEDIATION.md`
 
 Current and later accepted work packages may add or mature:
 

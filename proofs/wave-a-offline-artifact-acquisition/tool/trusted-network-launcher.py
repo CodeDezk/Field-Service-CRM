@@ -14,6 +14,9 @@ import os
 import stat
 import subprocess
 import tempfile
+import time
+from datetime import datetime, timezone
+from urllib.parse import urlsplit
 
 
 PYTHON_BINDING = {
@@ -397,6 +400,114 @@ def execute_bound_curl(request, output_session):
     return execute_bound_child(CURL_BINDING, build_curl_arguments(request, output_session.descriptor), output_session, 305)
 
 
+def validate_runtime_request(request, policy):
+    """Validate the exact request against the captured accepted source policy."""
+    required = {"schema", "classification", "requestId", "stage", "sourceId", "url",
+                "outputRelativePath", "maximumBytes", "expectedSha256", "expectedSize",
+                "metadataCommitSha256", "metadataCommitRelativePath"}
+    if not isinstance(request, dict) or set(request) - required - {"redirectedFromSourceId"}:
+        raise ControlStop("RUNTIME_REQUEST_FIELDS")
+    if request.get("classification") != "RUN_BOUND_NETWORK_REQUEST":
+        raise ControlStop("RUNTIME_REQUEST_CLASS")
+    if request.get("stage") not in {"METADATA_RETRIEVAL", "ARTIFACT_RETRIEVAL"}:
+        raise ControlStop("RUNTIME_REQUEST_STAGE")
+    if (not isinstance(request.get("requestId"), str) or not request["requestId"] or
+            not isinstance(request.get("outputRelativePath"), str)):
+        raise ControlStop("RUNTIME_REQUEST_ID")
+    relative = request["outputRelativePath"]
+    if (relative.startswith("/") or "\\" in relative or "\x00" in relative or
+            any(part in {"", ".", ".."} for part in relative.split("/"))):
+        raise ControlStop("RUNTIME_OUTPUT_PATH")
+    maximum = request.get("maximumBytes")
+    if (not isinstance(maximum, int) or maximum < 1 or
+            maximum > NETWORK_TRANSITION_LIMITS["maximumSingleResponseBytes"]):
+        raise ControlStop("RUNTIME_REQUEST_LIMIT")
+    entries = policy.get("entries") if isinstance(policy, dict) else None
+    if (policy.get("classification") != "ACCEPTED_POLICY_NOT_EXECUTION_AUTHORITY" or
+            not isinstance(entries, list)):
+        raise ControlStop("RUNTIME_POLICY_CLASS")
+    matches = [entry for entry in entries if isinstance(entry, dict) and
+               entry.get("id") == request.get("sourceId")]
+    if len(matches) != 1:
+        raise ControlStop("RUNTIME_REQUEST_SOURCE")
+    source = matches[0]
+    parsed = urlsplit(request.get("url", ""))
+    if (parsed.scheme != "https" or parsed.hostname != source.get("host") or
+            parsed.port not in {None, 443} or parsed.username is not None or
+            parsed.password is not None or parsed.query or parsed.fragment):
+        raise ControlStop("RUNTIME_REQUEST_URL")
+    boundary = source.get("path")
+    prefix = source.get("pathPrefix")
+    if ((boundary is not None and parsed.path != boundary) or
+            (prefix is not None and not parsed.path.startswith(prefix))):
+        raise ControlStop("RUNTIME_REQUEST_PATH")
+    if request["stage"] not in source.get("stages", []):
+        raise ControlStop("RUNTIME_REQUEST_SOURCE_STAGE")
+    if request["stage"] == "METADATA_RETRIEVAL":
+        if any(request.get(name) is not None for name in
+               ("expectedSha256", "expectedSize", "metadataCommitSha256",
+                "metadataCommitRelativePath")):
+            raise ControlStop("RUNTIME_METADATA_FIELDS")
+    else:
+        if (not isinstance(request.get("expectedSha256"), str) or
+                len(request["expectedSha256"]) != 64 or
+                not isinstance(request.get("expectedSize"), int) or
+                request["expectedSize"] < 1 or
+                not isinstance(request.get("metadataCommitSha256"), str) or
+                len(request["metadataCommitSha256"]) != 64 or
+                request.get("metadataCommitRelativePath") != "evidence/metadata-commit.json"):
+            raise ControlStop("RUNTIME_ARTIFACT_FIELDS")
+    return source
+
+
+def execute_authenticated_network_child(binding):
+    """The sole real child adapter; callers cannot select or replace this executor."""
+    request = binding["request"]
+    validate_runtime_request(request, binding["sourcePolicy"])
+    output_root = os.path.abspath(binding["outputRoot"])
+    output_path = os.path.abspath(os.path.join(output_root, request["outputRelativePath"]))
+    if not output_path.startswith(output_root + os.sep):
+        raise ControlStop("RUNTIME_OUTPUT_BOUNDARY")
+    with LedgerSession(binding["ledgerPath"], binding["authorizationSha256"],
+                       binding["runId"]) as ledger:
+        budgets = enforce_budgets(ledger.verified, request, NETWORK_TRANSITION_LIMITS, time.time())
+        ledger.append(request["stage"], "NETWORK_INTENT",
+                      datetime.now(timezone.utc).isoformat(), {
+                          "recordedAtEpoch": time.time(),
+                          "requestId": request["requestId"],
+                          "requestSha256": binding["requestSha256"],
+                          "sourceId": request["sourceId"],
+                          "outputRelativePath": request["outputRelativePath"],
+                          "maximumBytes": request["maximumBytes"],
+                          "budgetBefore": budgets,
+                      })
+        with OutputSession(output_path) as output:
+            result = execute_bound_curl(request, output)
+            digest = output.digest()
+            ledger.append(request["stage"], "NETWORK_RESULT",
+                          datetime.now(timezone.utc).isoformat(), {
+                              "requestId": request["requestId"],
+                              "requestSha256": binding["requestSha256"],
+                              "exitCode": result.returncode,
+                              "stdoutSha256": sha256_bytes(result.stdout),
+                              "stderrSha256": sha256_bytes(result.stderr),
+                              "receivedSize": digest["size"],
+                              "receivedSha256": digest["sha256"],
+                          })
+            if result.returncode != 0:
+                raise ControlStop("NETWORK_CHILD_EXIT")
+            if digest["size"] > request["maximumBytes"]:
+                raise ControlStop("NETWORK_SIZE")
+            if request.get("expectedSize") is not None and digest["size"] != request["expectedSize"]:
+                raise ControlStop("NETWORK_EXPECTED_SIZE")
+            if (request.get("expectedSha256") is not None and
+                    digest["sha256"] != request["expectedSha256"]):
+                raise ControlStop("NETWORK_EXPECTED_HASH")
+            return {"result": "PASS_AUTHENTICATED_NETWORK_CHILD", "networkPerformed": True,
+                    "networkChildProcessCreated": True, "requestId": request["requestId"],
+                    "receivedSize": digest["size"], "receivedSha256": digest["sha256"]}
+
+
 def enforce_budgets(ledger_state, request, limits, now_epoch):
     intents = [entry for entry in ledger_state["entries"] if entry.get("event") == "NETWORK_INTENT"]
     results = [entry for entry in ledger_state["entries"] if entry.get("event") == "NETWORK_RESULT"]
@@ -535,6 +646,7 @@ def validate_run_bound_runtime_entry(bootstrap, presented_enablement, request_by
     source_ids = {entry.get("id") for entry in policy.get("entries", []) if isinstance(entry, dict)}
     if request.get("sourceId") not in source_ids:
         raise ControlStop("RUNTIME_REQUEST_SOURCE")
+    validate_runtime_request(request, policy)
     transition = validate_signed_network_transition(
         bootstrap, presented_enablement, request_sha256, ledger_path, output_root,
         lambda binding: binding,
@@ -544,16 +656,18 @@ def validate_run_bound_runtime_entry(bootstrap, presented_enablement, request_by
     child_binding = {
         **transition["surrogateResult"],
         "request": request,
+        "sourcePolicy": policy,
         "requestSha256": request_sha256,
         "sourcePolicySha256": expected["sourcePolicySha256"],
         "pythonSha256": expected["pythonSha256"],
         "curlSha256": expected["curlSha256"],
+        "runId": authorization.get("runId"),
     }
     result = executor(child_binding)
     return {
-        "result": "PASS_RUN_BOUND_RUNTIME_ENTRY_STATIC_SURROGATE",
-        "networkPerformed": False,
-        "networkChildProcessCreated": False,
+        "result": "PASS_RUN_BOUND_RUNTIME_ENTRY",
+        "networkPerformed": result.get("networkPerformed") is True,
+        "networkChildProcessCreated": result.get("networkChildProcessCreated") is True,
         "surrogateResult": result,
     }
 
@@ -610,12 +724,19 @@ def transition_self_test():
 
 def runtime_entry_self_test():
     request = canonical_json({
-        "schema": "wave-a-network-request-v1", "classification": "SYNTHETIC_STATIC_NO_EXECUTION",
-        "requestId": "wp134-synthetic-request", "sourceId": "WP134-SOURCE-001",
+        "schema": "wave-a-network-request-v1", "classification": "RUN_BOUND_NETWORK_REQUEST",
+        "requestId": "wp137-synthetic-request", "stage": "METADATA_RETRIEVAL",
+        "sourceId": "WP137-SOURCE-001", "url": "https://example.invalid/metadata.json",
+        "outputRelativePath": "quarantine/metadata/synthetic.json", "maximumBytes": 1024,
+        "expectedSha256": None, "expectedSize": None, "metadataCommitSha256": None,
+        "metadataCommitRelativePath": None,
     }).encode("utf-8")
     policy = canonical_json({
-        "schema": "wave-a-network-source-policy-v1", "classification": "SYNTHETIC_STATIC_NO_EXECUTION",
-        "entries": [{"id": "WP134-SOURCE-001", "scheme": "https", "host": "example.invalid"}],
+        "schema": "wave-a-network-source-policy-v1",
+        "classification": "ACCEPTED_POLICY_NOT_EXECUTION_AUTHORITY",
+        "entries": [{"id": "WP137-SOURCE-001", "scheme": "https", "host": "example.invalid",
+                     "port": 443, "path": "/metadata.json", "stages": ["METADATA_RETRIEVAL"],
+                     "redirectLimit": 0}],
     }).encode("utf-8")
     enablement = b"wp134-static-runtime-enable"
     request_sha256 = sha256_bytes(request)
@@ -632,6 +753,7 @@ def runtime_entry_self_test():
     }
     authorization = {
         "state": "EFFECTIVE_NETWORK", "consumed": False, "singleUse": True,
+        "runId": "wp137-static-runtime",
         "networkEnablementSha256": sha256_bytes(enablement),
         "allowedRequestSha256s": [request_sha256], "ledgerPath": ledger_path,
         "outputRoot": output_root, "limits": NETWORK_TRANSITION_LIMITS,
@@ -788,6 +910,12 @@ def main():
     parser.add_argument("--network", action="store_true")
     parser.add_argument("--transition-self-test", action="store_true")
     parser.add_argument("--runtime-entry-self-test", action="store_true")
+    parser.add_argument("--enablement")
+    parser.add_argument("--request")
+    parser.add_argument("--source-policy")
+    parser.add_argument("--ledger")
+    parser.add_argument("--output-root")
+    parser.add_argument("--expected-bindings")
     arguments = parser.parse_args()
     if arguments.self_test and not arguments.network:
         print(canonical_json(self_test()))
@@ -799,8 +927,24 @@ def main():
             not arguments.self_test and not arguments.transition_self_test):
         print(canonical_json(runtime_entry_self_test()))
         return
-    require_trusted_bootstrap()
-    raise ControlStop("NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132")
+    bootstrap = require_trusted_bootstrap()
+    if not arguments.network or any(value is None for value in (
+            arguments.enablement, arguments.request, arguments.source_policy,
+            arguments.ledger, arguments.output_root, arguments.expected_bindings)):
+        raise ControlStop("NETWORK_RUNTIME_ARGUMENTS")
+    enablement = capture_file(arguments.enablement, 0o600)["bytes"]
+    request = capture_file(arguments.request, 0o600)["bytes"]
+    source_policy = capture_file(arguments.source_policy)["bytes"]
+    expected_capture = capture_file(arguments.expected_bindings, 0o600)["bytes"]
+    try:
+        expected = json.loads(expected_capture.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ControlStop("RUNTIME_EXPECTED_JSON") from error
+    receipt = validate_run_bound_runtime_entry(
+        bootstrap, enablement, request, source_policy, os.path.abspath(arguments.ledger),
+        os.path.abspath(arguments.output_root), expected, execute_authenticated_network_child,
+    )
+    print(canonical_json(receipt))
 
 
 if __name__ == "__main__":

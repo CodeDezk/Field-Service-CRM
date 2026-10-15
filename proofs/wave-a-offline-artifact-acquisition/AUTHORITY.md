@@ -210,3 +210,10 @@ The request must name an exact source-policy member and the signed transition ga
 pass. Drift fails before the seam. The real runtime entry remains closed; WP-134 creates no
 identity, key, signature, effective authority, curl child, network request or acquired byte.
 
+## WP-137 authenticated real-runtime dispatch boundary
+
+WP-137 statically connects the trusted real entry to the run-bound validator. Trusted bootstrap
+must succeed before exact enablement, request, source-policy and expected-binding files are read.
+The only real executor injected is the internal `execute_authenticated_network_child` adapter.
+WP-137 performs no signing or network execution and grants no authority by itself.
+
