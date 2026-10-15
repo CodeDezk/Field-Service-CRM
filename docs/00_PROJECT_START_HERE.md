@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-134 independently validated; owner acceptance required |
-| Current phase | Wave A Run-Bound Network Runtime Entry Static Remediation |
-| Current work package | `WP-134 Run-Bound Network Runtime Entry Static Remediation` |
+| Status | Product Discovery closed — WP-135 owner decision required; execution closed |
+| Current phase | Wave A Network Execution Identity and Effective Authorization Readiness |
+| Current work package | `WP-135 Wave A Network Execution Identity and Effective Authorization Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -177,6 +177,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 118. `126_WAVE_A_SIGNED_AUTHORITY_EXACT_NETWORK_GATE_STATIC_REMEDIATION.md`
 119. `127_WAVE_A_NETWORK_ACQUISITION_EXECUTION_AUTHORIZATION_READINESS.md`
 120. `128_WAVE_A_RUN_BOUND_NETWORK_RUNTIME_ENTRY_STATIC_REMEDIATION.md`
+121. `129_WAVE_A_NETWORK_EXECUTION_IDENTITY_EFFECTIVE_AUTHORIZATION_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 

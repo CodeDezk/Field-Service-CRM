@@ -4,7 +4,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Independently validated — owner acceptance required |
+| Status | Accepted and published |
 | Work package | `WP-134 Run-Bound Network Runtime Entry Static Remediation` |
 | Owner | Aung Myo Oo |
 | Governing decision | `DEC-260` — Accepted |
@@ -99,4 +99,7 @@ network behavior or acquisition result.
 ## Candidate inventory and next gate
 
 The candidate inventory is documents 00, 02, 127 and 128 plus the five changed acquisition proof
-files. WP-134 may not be committed or pushed without later owner acceptance.
+files. The accepted inventory was committed and published at
+`53d6d812c9b4ba92a95c8bb78543da44b66ccf48`, repository tree
+`3cef53e1bad37b87efeb0d4fa572ccfb07110775`; live `origin/main` matched. Publication activated
+WP-135 documentation only and did not authorize signing, effective authorization or network.
