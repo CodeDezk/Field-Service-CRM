@@ -107,3 +107,16 @@ verified. This is recorded as an unverified legacy-fixture limitation, not a WP-
 
 WP-128 is `STATIC_HELPER_RESOLUTION_REMEDIATED_VALIDATED` and stops for owner acceptance. Neither
 the primary PASS nor validator PASS authorizes publication, signing or execution.
+
+## Owner acceptance and verified publication
+
+The owner accepted `DEC-255`, all WP-128 facts, remediations, bindings and decisions, 67/67 tests,
+both 34-file verifiers, the 46-file proof inventory, exact 12-path candidate inventory, independent
+PASS with zero findings, consumed validator authority and the legacy-fixture limitation.
+
+The frozen 12-path public/proof inventory was committed as
+`eef557d WP-128: validate pre-key helper resolution` and published at
+`eef557daebb459ba7eacc9affa93115bfc1e561c`, repository tree
+`83c03f6bba8f4cdd926ba2dd5328481aac53108d`, proof tree
+`c5737f78ccecf8b667259825308d2c306eaba859`. Live `origin/main` and local `HEAD` matched.
+WP-129 is active for owner-decision documentation and one ineffective private draft only.

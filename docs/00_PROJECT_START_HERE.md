@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Product Discovery closed — WP-128 independently validated PASS; owner review required |
-| Current phase | Wave A Exact Helper Resolution and Pre-Key Preflight Static Remediation |
-| Current work package | `WP-128 Exact Helper Resolution and Pre-Key Preflight Static Remediation` |
+| Status | Product Discovery closed — WP-129 owner review required |
+| Current phase | Wave A Remediated Real Signing Materialization Reauthorization Readiness |
+| Current work package | `WP-129 Remediated Real Signing Materialization Reauthorization Readiness` |
 | Application coding | Not authorized |
 | Architecture selection | Not authorized |
 | Owner | Aung Myo Oo |
@@ -171,6 +171,7 @@ All Phase 1 documents are currently Draft unless a section or record says otherw
 112. `120_WAVE_A_REMEDIATED_REAL_SIGNING_MATERIALIZATION_REAUTHORIZATION_READINESS.md`
 113. `121_WAVE_A_CONTROLLED_REMEDIATED_REAL_SIGNING_MATERIALIZATION_RESULT.md`
 114. `122_WAVE_A_EXACT_HELPER_RESOLUTION_PRE_KEY_PREFLIGHT_STATIC_REMEDIATION.md`
+115. `123_WAVE_A_REMEDIATED_REAL_SIGNING_MATERIALIZATION_REAUTHORIZATION_READINESS.md`
 
 Current and later accepted work packages may add or mature:
 
