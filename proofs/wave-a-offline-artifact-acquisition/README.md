@@ -126,3 +126,8 @@ Its static self-test proves that an exact `EFFECTIVE_NETWORK` authority can reac
 surrogate seam after enablement, request, ledger, output, limit and action-flag checks. Static,
 consumed and drifted cases fail closed. The runtime entry still terminates before curl or network.
 
+WP-134 adds a second static gate for fresh run-bound runtime inputs. It binds revision, tree, tool
+hashes, source-policy bytes and exact request bytes before an internally injected surrogate child.
+Revision, tool, policy and request drift fail closed. The actual runtime entry remains stopped
+before curl and network.
+

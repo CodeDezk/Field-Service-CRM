@@ -389,3 +389,18 @@ test("signed network transition reaches only the substituted static execution se
     "STATIC_STATE", "ENABLEMENT_DRIFT", "REQUEST_DRIFT", "LEDGER_DRIFT", "OUTPUT_DRIFT", "CONSUMED",
   ]);
 });
+
+test("run-bound runtime entry binds fresh tools, source policy and request before surrogate child", () => {
+  const result = spawnSync("/usr/bin/python3", ["-I", "-S", launcherPath, "--runtime-entry-self-test"], {
+    encoding: "utf8",
+    env: { PATH: "/usr/bin:/bin", LANG: "C", LC_ALL: "C" },
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const receipt = JSON.parse(result.stdout);
+  assert.equal(receipt.result, "PASS_RUN_BOUND_RUNTIME_ENTRY_STATIC_SURROGATE");
+  assert.equal(receipt.networkPerformed, false);
+  assert.equal(receipt.networkChildProcessCreated, false);
+  assert.equal(receipt.surrogateResult.classification, "SUBSTITUTED_RUNTIME_CHILD");
+  assert.equal(receipt.surrogateResult.request.schema, "wave-a-network-request-v1");
+  assert.deepEqual(receipt.rejected, ["REVISION_DRIFT", "TOOL_DRIFT", "POLICY_DRIFT", "REQUEST_DRIFT"]);
+});

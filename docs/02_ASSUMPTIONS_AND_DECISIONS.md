@@ -7,7 +7,7 @@
 | Status | Accepted WP-01 baseline — living decision register |
 | Work package | `WP-01 Product Vision and Boundaries` |
 | Owner | Aung Myo Oo |
-| Last updated | 2026-10-14 |
+| Last updated | 2026-10-15 |
 
 ## Purpose
 
@@ -307,7 +307,8 @@ Accepted.
 | `DEC-257` | Accept WP-130 as a validated, closed, single-use pre-network signing materialization result and prohibit reuse of its private authority or destroyed key. | The pre-key gate, signature verification, exact closed-boundary stop, independent review and cleanup all passed without network. | Accepted under standing owner authorization |
 | `DEC-258` | Require a separately reviewed proof-static network-transition remediation before any effective acquisition authorization can exist. | The accepted launcher deliberately stops before network and WP-130's static-only authority is consumed; neither may be bypassed or promoted. | Accepted under standing owner authorization |
 | `DEC-259` | Accept the signed `EFFECTIVE_NETWORK` transition gate only after independent static validation confirms exact signed bindings and a still-closed runtime boundary. | Static surrogate reachability must not itself create network authority or execute curl. | Accepted |
-| `DEC-260` | Classify network acquisition execution as not ready and require one more proof-static runtime-entry materialization package. | The runtime entry still stops before curl, the network contract retains consumed WP-118 bindings, and no exact run-bound metadata request or identities exist. | Proposed |
+| `DEC-260` | Classify network acquisition execution as not ready and require one more proof-static runtime-entry materialization package. | The runtime entry still stops before curl, the network contract retains consumed WP-118 bindings, and no exact run-bound metadata request or identities exist. | Accepted |
+| `DEC-261` | Accept the WP-134 run-bound runtime-entry static gate only after exact inventory sealing and independent zero-authority validation; preserve real signing, effective authorization, identity and network execution as later gates. | WP-134 removes consumed runtime constants, binds the complete child-execution contract before process creation and proves the internal seam with local surrogates, but it produces no real authority or network evidence. | Proposed |
 
 ## Open decision register
 

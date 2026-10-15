@@ -109,7 +109,8 @@ export function verifyNetworkLauncher(root) {
     "verify_system_sealed_descriptor", "flock(self.anchor_descriptor",
     '"/usr/bin/python3"', '"/usr/bin/curl"', "NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132",
     "validate_signed_network_transition", "networkEnablementSha256",
-    "PASS_SIGNED_NETWORK_TRANSITION_STATIC_SURROGATE"]) {
+    "PASS_SIGNED_NETWORK_TRANSITION_STATIC_SURROGATE", "validate_run_bound_runtime_entry",
+    "PASS_RUN_BOUND_RUNTIME_ENTRY_STATIC_SURROGATE", "sourcePolicySha256"]) {
     if (!trustedLauncher.includes(required)) throw new Error(`TRUSTED_LAUNCHER_CONTROL:${required}`);
   }
   for (const required of ["TMPDIR: \"/tmp\"", "BOOTSTRAP_STDERR",

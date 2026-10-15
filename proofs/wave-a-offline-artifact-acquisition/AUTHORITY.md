@@ -202,3 +202,11 @@ and the complete action-flag set. Static-only, synthetic, missing, consumed or d
 fails closed. The public runtime entry remains terminated by
 `NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132`; `/usr/bin/curl` is never invoked by WP-132.
 
+## WP-134 run-bound runtime-entry static boundary
+
+WP-134 permits only static proof that fresh revision, tree, Python, curl, bootstrap, launcher,
+source-policy and request hashes are bound before an internally supplied surrogate child seam.
+The request must name an exact source-policy member and the signed transition gate must already
+pass. Drift fails before the seam. The real runtime entry remains closed; WP-134 creates no
+identity, key, signature, effective authority, curl child, network request or acquired byte.
+

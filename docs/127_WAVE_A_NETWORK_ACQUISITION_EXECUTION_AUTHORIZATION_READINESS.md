@@ -4,14 +4,14 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Proposed — owner review required |
+| Status | Accepted and published |
 | Work package | `WP-133 Wave A Network Acquisition Execution Authorization Readiness` |
 | Owner | Aung Myo Oo |
 | Governing decision | `DEC-259` — Accepted |
 | Published WP-132 revision | `7e4a1f47b526786c233b72eff0f151366055d6c3` |
 | Published repository tree | `47d541b02fa72d37572220696d1fc5cd618f5222` |
 | Published proof tree | `1c20b3932884e0e2f9a9d96f42e40eaf202fc33e` |
-| Recommendation | `DEC-260` — Proposed |
+| Recommendation | `DEC-260` — Accepted |
 | Readiness | `NOT_READY_RUNTIME_ENTRY_AND_RUN_BINDINGS` |
 | Network/download/acquisition | Closed |
 | Date | 2026-10-15 |
@@ -116,5 +116,7 @@ runtime-entry remediation, retain option 005 as fallback and reject options 002 
 
 ## Candidate inventory and next gate
 
-The exact public candidate inventory is documents 00, 02, 126 and 127. WP-133 stops for owner
-review. No commit or push is authorized.
+The exact public inventory is documents 00, 02, 126 and 127. It was published and verified at
+revision `fcc791f59b3cbd9a9074d4ced08fa7ae9bed545a`, repository tree
+`bfc93ff84795e6a6a509973d4ee5181daaa8c45f`. Owner acceptance activated WP-134 static remediation;
+it did not authorize real signing, effective authorization, identities, network or acquisition.

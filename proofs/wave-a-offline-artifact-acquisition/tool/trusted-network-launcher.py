@@ -490,6 +490,74 @@ def validate_signed_network_transition(bootstrap, presented_enablement, request_
     }
 
 
+def validate_run_bound_runtime_entry(bootstrap, presented_enablement, request_bytes,
+                                     source_policy_bytes, ledger_path, output_root,
+                                     expected, executor):
+    """Bind fresh run inputs before reaching an internally supplied child seam."""
+    authorization = bootstrap.get("authorization")
+    required_expected = {
+        "publishedRevision", "repositoryTree", "pythonSha256", "curlSha256",
+        "bootstrapSha256", "launcherSha256", "sourcePolicySha256",
+    }
+    if not isinstance(expected, dict) or set(expected) != required_expected:
+        raise ControlStop("RUNTIME_EXPECTED_BINDINGS")
+    for name in ("publishedRevision", "repositoryTree"):
+        value = expected.get(name)
+        if not isinstance(value, str) or len(value) != 40:
+            raise ControlStop("RUNTIME_GIT_BINDING")
+    for name in required_expected - {"publishedRevision", "repositoryTree"}:
+        value = expected.get(name)
+        if not isinstance(value, str) or len(value) != 64:
+            raise ControlStop("RUNTIME_HASH_BINDING")
+    exact_authorization = {
+        "publishedRevision": expected["publishedRevision"],
+        "repositoryTree": expected["repositoryTree"],
+        "pythonSha256": expected["pythonSha256"],
+        "curlSha256": expected["curlSha256"],
+        "trustedBootstrapSha256": expected["bootstrapSha256"],
+        "trustedLauncherSha256": expected["launcherSha256"],
+        "sourcePolicySha256": expected["sourcePolicySha256"],
+    }
+    if any(authorization.get(name) != value for name, value in exact_authorization.items()):
+        raise ControlStop("RUNTIME_AUTHORIZATION_BINDING")
+    if sha256_bytes(source_policy_bytes) != expected["sourcePolicySha256"]:
+        raise ControlStop("RUNTIME_SOURCE_POLICY_BINDING")
+    request_sha256 = sha256_bytes(request_bytes)
+    try:
+        request = json.loads(request_bytes.decode("utf-8"))
+        policy = json.loads(source_policy_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ControlStop("RUNTIME_JSON") from error
+    if request.get("schema") != "wave-a-network-request-v1":
+        raise ControlStop("RUNTIME_REQUEST_SCHEMA")
+    if policy.get("schema") != "wave-a-network-source-policy-v1":
+        raise ControlStop("RUNTIME_POLICY_SCHEMA")
+    source_ids = {entry.get("id") for entry in policy.get("entries", []) if isinstance(entry, dict)}
+    if request.get("sourceId") not in source_ids:
+        raise ControlStop("RUNTIME_REQUEST_SOURCE")
+    transition = validate_signed_network_transition(
+        bootstrap, presented_enablement, request_sha256, ledger_path, output_root,
+        lambda binding: binding,
+    )
+    if not callable(executor):
+        raise ControlStop("RUNTIME_EXECUTION_SEAM")
+    child_binding = {
+        **transition["surrogateResult"],
+        "request": request,
+        "requestSha256": request_sha256,
+        "sourcePolicySha256": expected["sourcePolicySha256"],
+        "pythonSha256": expected["pythonSha256"],
+        "curlSha256": expected["curlSha256"],
+    }
+    result = executor(child_binding)
+    return {
+        "result": "PASS_RUN_BOUND_RUNTIME_ENTRY_STATIC_SURROGATE",
+        "networkPerformed": False,
+        "networkChildProcessCreated": False,
+        "surrogateResult": result,
+    }
+
+
 def transition_self_test():
     enablement = b"wp132-static-surrogate-enable"
     request_sha256 = "b" * 64
@@ -536,6 +604,71 @@ def transition_self_test():
             rejected.append(name)
         else:
             raise ControlStop("NETWORK_NEGATIVE_CONTROL")
+    receipt["rejected"] = rejected
+    return receipt
+
+
+def runtime_entry_self_test():
+    request = canonical_json({
+        "schema": "wave-a-network-request-v1", "classification": "SYNTHETIC_STATIC_NO_EXECUTION",
+        "requestId": "wp134-synthetic-request", "sourceId": "WP134-SOURCE-001",
+    }).encode("utf-8")
+    policy = canonical_json({
+        "schema": "wave-a-network-source-policy-v1", "classification": "SYNTHETIC_STATIC_NO_EXECUTION",
+        "entries": [{"id": "WP134-SOURCE-001", "scheme": "https", "host": "example.invalid"}],
+    }).encode("utf-8")
+    enablement = b"wp134-static-runtime-enable"
+    request_sha256 = sha256_bytes(request)
+    policy_sha256 = sha256_bytes(policy)
+    ledger_path = "/private/tmp/wp134-static-ledger.ndjson"
+    output_root = "/private/tmp/wp134-static-output"
+    flags = {name: True for name in NETWORK_TRANSITION_FLAGS}
+    flags.update({name: False for name in NETWORK_TRANSITION_CLOSED_FLAGS})
+    expected = {
+        "publishedRevision": "1" * 40, "repositoryTree": "2" * 40,
+        "pythonSha256": PYTHON_BINDING["sha256"], "curlSha256": CURL_BINDING["sha256"],
+        "bootstrapSha256": "3" * 64, "launcherSha256": "4" * 64,
+        "sourcePolicySha256": policy_sha256,
+    }
+    authorization = {
+        "state": "EFFECTIVE_NETWORK", "consumed": False, "singleUse": True,
+        "networkEnablementSha256": sha256_bytes(enablement),
+        "allowedRequestSha256s": [request_sha256], "ledgerPath": ledger_path,
+        "outputRoot": output_root, "limits": NETWORK_TRANSITION_LIMITS,
+        "actionFlags": flags, "publishedRevision": expected["publishedRevision"],
+        "repositoryTree": expected["repositoryTree"], "pythonSha256": expected["pythonSha256"],
+        "curlSha256": expected["curlSha256"], "trustedBootstrapSha256": expected["bootstrapSha256"],
+        "trustedLauncherSha256": expected["launcherSha256"], "sourcePolicySha256": policy_sha256,
+    }
+    bootstrap = {"authorization": authorization, "authorizationSha256": "a" * 64}
+    receipt = validate_run_bound_runtime_entry(
+        bootstrap, enablement, request, policy, ledger_path, output_root, expected,
+        lambda binding: {"classification": "SUBSTITUTED_RUNTIME_CHILD", **binding},
+    )
+    rejected = []
+    cases = [
+        ("REVISION_DRIFT", {**authorization, "publishedRevision": "9" * 40}, request, policy,
+         expected, "RUNTIME_AUTHORIZATION_BINDING"),
+        ("TOOL_DRIFT", {**authorization, "curlSha256": "9" * 64}, request, policy,
+         expected, "RUNTIME_AUTHORIZATION_BINDING"),
+        ("POLICY_DRIFT", authorization, request, policy + b" ", expected,
+         "RUNTIME_SOURCE_POLICY_BINDING"),
+        ("REQUEST_DRIFT", authorization, request + b" ", policy, expected,
+         "NETWORK_REQUEST_BINDING"),
+    ]
+    for name, candidate, request_candidate, policy_candidate, expected_candidate, expected_error in cases:
+        try:
+            validate_run_bound_runtime_entry(
+                {"authorization": candidate, "authorizationSha256": "a" * 64}, enablement,
+                request_candidate, policy_candidate, ledger_path, output_root, expected_candidate,
+                lambda _binding: "PROHIBITED",
+            )
+        except ControlStop as error:
+            if str(error) != expected_error:
+                raise
+            rejected.append(name)
+        else:
+            raise ControlStop("RUNTIME_NEGATIVE_CONTROL")
     receipt["rejected"] = rejected
     return receipt
 
@@ -654,12 +787,17 @@ def main():
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--network", action="store_true")
     parser.add_argument("--transition-self-test", action="store_true")
+    parser.add_argument("--runtime-entry-self-test", action="store_true")
     arguments = parser.parse_args()
     if arguments.self_test and not arguments.network:
         print(canonical_json(self_test()))
         return
     if arguments.transition_self_test and not arguments.network and not arguments.self_test:
         print(canonical_json(transition_self_test()))
+        return
+    if (arguments.runtime_entry_self_test and not arguments.network and
+            not arguments.self_test and not arguments.transition_self_test):
+        print(canonical_json(runtime_entry_self_test()))
         return
     require_trusted_bootstrap()
     raise ControlStop("NETWORK_RUNTIME_NOT_AUTHORIZED_BY_WP132")
