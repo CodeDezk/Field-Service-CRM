@@ -4,7 +4,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Proposed — owner review required |
+| Status | Accepted and published |
 | Work package | `WP-135 Wave A Network Execution Identity and Effective Authorization Readiness` |
 | Owner | Aung Myo Oo |
 | Governing decision | `DEC-261` — Accepted |
@@ -129,4 +129,7 @@ advance option 001, retain option 005 only as an evidence-equivalent fallback an
 ## Candidate inventory and next gate
 
 The exact public candidate inventory is documents 00, 02, 128 and 129. WP-135 stops for owner
-review. No network action, commit or push is authorized.
+review. The accepted inventory was committed and published at
+`5f306f65991c63a54d4ff58adad9c7d506aba5a3`, repository tree
+`a0454d2371ff44eb8bb549095fd58bb2abf50a46`; live `origin/main` matched. Publication and the
+separate WP-136 authorization did not waive mandatory preflight or fail-closed stop conditions.
