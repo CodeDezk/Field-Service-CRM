@@ -15,9 +15,11 @@ export const EXPECTED_FILES = [
   "schemas/owner-trust-root.schema.json",
   "schemas/run-bound-metadata-commit.schema.json",
   "test/acquisition-extension-static.test.mjs", "test/acquisition-launcher-static.test.mjs",
+  "test/pre-key-helper-resolution-static.test.mjs",
   "test/pre-network-bootstrap-invocation-static.test.mjs",
   "test/trusted-network-launcher-static.test.mjs",
   "tool/acquisition-launcher.mjs", "tool/contract.mjs", "tool/network-contract.mjs",
+  "tool/pre-key-helper-resolution.mjs",
   "tool/pre-network-bootstrap-invocation.mjs", "tool/static-launcher.mjs",
   "tool/trusted-bootstrap-loader.py", "tool/trusted-network-launcher.py",
   "tool/verify-extension.mjs", "tool/verify-network-launcher.mjs",
@@ -46,6 +48,7 @@ export function verifyExtension(root) {
     !path.startsWith("test/acquisition-launcher-") && !path.startsWith("tool/acquisition-launcher") &&
     !path.startsWith("test/trusted-network-launcher-") && !path.startsWith("tool/trusted-") &&
     !path.startsWith("tool/network-contract") && !path.startsWith("tool/pre-network-bootstrap-invocation") &&
+    !path.startsWith("tool/pre-key-helper-resolution") && !path.startsWith("test/pre-key-helper-resolution") &&
     !path.startsWith("test/pre-network-bootstrap-invocation") && !path.startsWith("tool/verify-network-launcher"))) {
     const text = readFileSync(resolve(expectedRoot, path), "utf8");
     if (!sourceTextIsStaticOnly(text)) throw new Error(`NETWORK_CAPABILITY:${path}`);

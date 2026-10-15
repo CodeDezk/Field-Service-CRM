@@ -32,11 +32,13 @@ export const EXPECTED_WP115_FILES = [
   "schemas/static-authorization.schema.json",
   "test/acquisition-extension-static.test.mjs",
   "test/acquisition-launcher-static.test.mjs",
+  "test/pre-key-helper-resolution-static.test.mjs",
   "test/pre-network-bootstrap-invocation-static.test.mjs",
   "test/trusted-network-launcher-static.test.mjs",
   "tool/acquisition-launcher.mjs",
   "tool/contract.mjs",
   "tool/network-contract.mjs",
+  "tool/pre-key-helper-resolution.mjs",
   "tool/pre-network-bootstrap-invocation.mjs",
   "tool/static-launcher.mjs",
   "tool/trusted-bootstrap-loader.py",
@@ -86,6 +88,7 @@ export function verifyNetworkLauncher(root) {
   const bootstrap = captures.get("tool/trusted-bootstrap-loader.py").text;
   const trustedLauncher = captures.get("tool/trusted-network-launcher.py").text;
   const invocation = captures.get("tool/pre-network-bootstrap-invocation.mjs").text;
+  const helperResolution = captures.get("tool/pre-key-helper-resolution.mjs").text;
   for (const required of ["NETWORK_INTENT", "NETWORK_RESULT",
     "verifyControlBindings", "allowedRequestSha256s", "validateMetadataCommitForRequest", "acquireNetworkLock",
     "authorizationCapture", "STATIC_CHILD_EXECUTION_PROHIBITED", "sealedRelativePath",
@@ -110,6 +113,10 @@ export function verifyNetworkLauncher(root) {
   for (const required of ["TMPDIR: \"/tmp\"", "BOOTSTRAP_STDERR",
     "NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121", "spawnSync(\"/usr/bin/python3\""]) {
     if (!invocation.includes(required)) throw new Error(`PRE_NETWORK_INVOCATION_CONTROL:${required}`);
+  }
+  for (const required of ["HELPER_REPOSITORY_PATH", "REPOSITORY_ROOT_NOT_ABSOLUTE",
+    "HELPER_HASH_MISMATCH", "PASS_PRE_KEY_HELPER_PREFLIGHT", "pathToFileURL"]) {
+    if (!helperResolution.includes(required)) throw new Error(`PRE_KEY_HELPER_CONTROL:${required}`);
   }
   if (contract.includes('args.push("--location")') || !contract.includes('"--max-redirs", "0"')) {
     throw new Error("LAUNCHER_REDIRECT_POLICY");

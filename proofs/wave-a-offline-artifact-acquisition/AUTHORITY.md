@@ -183,3 +183,13 @@ including `TMPDIR=/tmp`, and retain the exact terminal-stop oracle. Prevention i
 pattern filtering, diagnostic suppression, or reinterpretation of unexpected stderr remains
 prohibited. WP-125 grants no real-key, network, acquisition, dependency or runtime authority.
 
+## WP-128 exact helper resolution boundary
+
+WP-128 permits only proof-static remediation of the pre-key helper resolution failure recorded by
+WP-127. A future private materializer must receive an explicit absolute repository root, resolve
+the published helper from its repository-relative path, capture and verify its accepted SHA-256,
+and import-check its required exports before any key-generation operation. Workspace paths
+containing spaces must remain literal. Relative roots, wrong-depth roots, escaped paths and hash
+drift fail closed. WP-128 grants no real-key, signing, network, acquisition, dependency or runtime
+authority.
+

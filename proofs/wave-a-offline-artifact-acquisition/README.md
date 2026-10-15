@@ -114,3 +114,10 @@ WP-125 adds an exact pre-network bootstrap invocation contract. It supplies a sa
 still requires exit `1`, empty stdout and exactly `NETWORK_EXECUTION_NOT_AUTHORIZED_BY_WP121` on
 stderr. No warning or other diagnostic is filtered or reinterpreted.
 
+WP-128 adds a pre-key helper-resolution control. The caller supplies an explicit absolute
+repository root; the control resolves the published invocation helper from a fixed
+repository-relative path, verifies its SHA-256 and required exports, and only then reports a
+preflight pass. It does not generate keys or authorize signing, network, acquisition or runtime
+work. Paths containing spaces are supported without shell evaluation; relative or wrong-depth
+roots and hash drift fail closed.
+

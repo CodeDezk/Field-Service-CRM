@@ -281,6 +281,6 @@ test("combined public inventory verifies without network", () => {
   const result = verifyNetworkLauncher(root);
   assert.equal(result.result, "PASS");
   assert.equal(result.classification, "STATIC_PRE_NETWORK_DIAGNOSTIC_NORMALIZATION_REMEDIATED");
-  assert.equal(result.publicFiles, 32);
+  assert.equal(result.publicFiles, 34);
   assert.equal(result.networkPerformed, false);
 });

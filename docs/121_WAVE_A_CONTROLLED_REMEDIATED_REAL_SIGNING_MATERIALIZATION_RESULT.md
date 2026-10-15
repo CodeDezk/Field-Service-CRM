@@ -69,3 +69,14 @@ and advance proof-only static helper-resolution remediation before another mater
 The exact public candidate inventory is documents 00, 02, 120 and 121. WP-127 stops for owner
 review; no commit or push is authorized.
 
+## Owner acceptance and verified publication
+
+The owner accepted `DEC-254`, `WP127-DEV-001`, all WP-127 facts, remediations and decisions, the
+cleanup and residual PASS, six-entry private stop inventory, inventory-index hash and no-validator
+disposition. Run `wp127-2026-10-15-01` is closed without retry or material reuse.
+
+The frozen four-path public inventory was committed as
+`9bd7c36 WP-127: record controlled materialization result` and published at
+`9bd7c36b6862db03f97da297af3cfb44c179d5a5`. Live `origin/main` and local `HEAD` matched.
+WP-128 is active only for proof-static helper resolution and pre-key preflight remediation.
+
